@@ -32,3 +32,10 @@
 
 # OS Generated
 *.DS_Store
+
+
+# Makefile Generated - Project Specific
+lex.yy.c
+y.tab.c
+y.tab.h
+shell

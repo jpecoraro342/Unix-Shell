@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <dirent.h> 
 #include <unistd.h>
 #include "shell.h"
 
@@ -31,7 +33,19 @@ void syntax_error_found() {
 
 /* Changes the directory to the specified path */
 void list_files() {
-	printf("List all the files in the current directory\n");
+	DIR *d;
+	struct dirent *dir;
+	d = opendir(".");
+
+	if (d) {
+    	while ((dir = readdir(d)) != NULL) {
+      		printf("%s\n", dir->d_name);
+    	}
+    	closedir(d);
+  	}
+  	else {
+  		printf("directory empty\n");
+  	}
 }
 
 void change_directory(char * new_directory) {
