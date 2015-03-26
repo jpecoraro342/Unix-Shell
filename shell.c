@@ -1,5 +1,7 @@
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include "shell.h"
 
@@ -8,7 +10,15 @@
 
 /* Cleanup for when a new line has been entered - printing stuff, etc. */
 void handle_new_line() {
-	printf("USER:DIRECTORY $ ");
+	char current_directory[512];
+	getcwd(current_directory, sizeof(current_directory));
+
+	char *path_extension = strrchr(current_directory, '/') + 1;
+
+	char current_user[100];
+	getlogin_r(current_user, sizeof(current_user));
+
+	printf("%s:%s $ ", current_user, path_extension);
 }
 
 /* handle syntax */
