@@ -10,6 +10,8 @@ void syntax_error_found();
 
 /* System Functions */
 
-/* Changes the directory to the specified path */
+/* List all the files in the current directory */
 void list_files();
+
+/* Changes the directory to the specified path */
 void change_directory(char * new_directory);

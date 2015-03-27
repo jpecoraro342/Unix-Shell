@@ -27,16 +27,15 @@ void handle_new_line() {
 	printf("%s:%s $ ", current_user, path_extension);
 }
 
-/* handle syntax */
+/* Handle Syntax */
 //TODO: Allow this to take a string so we can print out what the actual issue is
 void syntax_error_found() {
 	//printf("Syntax Error\n");
 }
 
 
-/* System Functions */
+/* System Function Calls */
 
-/* Changes the directory to the specified path */
 void list_files() {
 	DIR *d;
 	struct dirent *dir;
@@ -58,8 +57,4 @@ void change_directory(char * new_directory) {
 	if (success != 0) {
 		printf("%s: %s\n", new_directory, strerror(errno));
 	}
-}
-
-void print_error_name() {
-	//TODO: Switch through all the errno and print an appropriate name/message for them
 }

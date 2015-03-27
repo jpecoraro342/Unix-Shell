@@ -18,7 +18,9 @@ int yylex();
 //%type <arg> quote_input;
 
 %start line
-%token ls_command cd_command exit_command file_name word new_line quote semicolon syntax
+%token ls_command cd_command exit_command 
+%token file_name word new_line quote semicolon 
+%token syntax
 
 %%
 
@@ -86,6 +88,3 @@ int main (void) {
 void yyerror (char *s) { syntax_error_found(); } 
 
 
-//NOTES
-
-//The quote stuff almost works, but not quite. I commented it out so we can just ignor it for now
