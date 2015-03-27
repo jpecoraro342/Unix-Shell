@@ -11,6 +11,7 @@
 //My Stuff
 #include "shell.h"
 
+extern char **environ;
 
 /* Shell Interfacing */
 
@@ -57,4 +58,30 @@ void change_directory(char * new_directory) {
 	if (success != 0) {
 		printf("%s: %s\n", new_directory, strerror(errno));
 	}
+}
+
+void set_environment_variable(char *var_name, char* new_value)
+{
+	printf("VARIABLE: %s \t VALUE : %s \n", var_name, new_value);
+	if (setenv(var_name, new_value, 1) != 0)
+	{
+		printf("Cannot set variable %s to value %s : %s\n", var_name, new_value, strerror(errno));
+	}
+}
+
+void unset_environment_variable(char *var_name)
+{
+	if (unsetenv(var_name) != 0)
+	{
+		printf("Cannot unset variable %s : %s\n", var_name, strerror(errno));
+	}
+}
+
+void print_environment_variables(void)
+{
+	char ** env;
+	for (env = environ; *env; ++env)
+	{
+    	printf("%s\n", *env);
+    }
 }

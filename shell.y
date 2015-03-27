@@ -18,7 +18,7 @@ int yylex();
 //%type <arg> quote_input;
 
 %start line
-%token ls_command cd_command exit_command 
+%token ls_command cd_command exit_command setenv_command unsetenv_command printenv_command
 %token file_name word new_line quote semicolon 
 %token syntax
 
@@ -34,9 +34,12 @@ line    : command			{;}
       	//Simple Commands
 command : exit_command		{ exit(0); }
 		| ls_command		{ list_files(); }
+		| printenv_command	{ print_environment_variables(); }
 
 		//Complex Commands
 		| change_directory	{;}
+		| set_environ_var		{;}
+		| unset_environ_var 	{;}
 
 		//Other Stuff
 		| new_line 			{ handle_new_line(); }
@@ -58,6 +61,12 @@ change_directory   	: cd_command file_name  { change_directory($2); }
 					| cd_command word { change_directory($2); } 
 					//| cd_command quote_input { change_directory($2); }  
         			;
+
+set_environ_var		: setenv_command word word {set_environment_variable($2, $3); }
+					;
+
+unset_environ_var	: unsetenv_command word {unset_environment_variable($2); }
+					;
 
 /* Non-Commands */
 
