@@ -1,10 +1,14 @@
-
+//C Libraries
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+//Unix Libraries
 #include <dirent.h> 
 #include <unistd.h>
+#include <errno.h>
+
+//My Stuff
 #include "shell.h"
 
 
@@ -49,5 +53,16 @@ void list_files() {
 }
 
 void change_directory(char * new_directory) {
-	printf("Will soon change to directory: %s\n", new_directory);
+	int success = chdir(new_directory);
+	if (success == 0) {
+		char current_directory[512];
+		getcwd(current_directory, sizeof(current_directory));
+	}
+	else {
+		printf("Error Changing Directory: %d\n", errno);
+	}
+}
+
+void print_error_name() {
+	//TODO: Switch through all the errno and print an appropriate name/message for them
 }
