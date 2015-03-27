@@ -13,3 +13,6 @@ void syntax_error_found();
 /* Changes the directory to the specified path */
 void list_files();
 void change_directory(char * new_directory);
+void set_environment_variable(char *var_name, char* new_value);
+void unset_environment_variable(char *var_name);
+void print_environment_variables(void);

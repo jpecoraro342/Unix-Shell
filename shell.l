@@ -9,14 +9,19 @@
 
 "ls"					{ return ls_command; }
 "cd"				   	{ return cd_command; }
+
+"setenv"				{ return setenv_command; }
+"unsetenv"				{ return unsetenv_command; }
+"printenv"				{ return printenv_command; }
+
 "exit"				   	{ return exit_command; }
 "\""					{ return quote; }
-[a-zA-Z][a-zA-Z0-9]*	{ yylval.arg = yytext; return word; }
+[a-zA-Z][a-zA-Z0-9]*	{ yylval.arg = yytext; yytext = ""; return word; }
 [a-zA-Z0-9_\/.-]+		{ yylval.arg = yytext; return file_name; }
 ;						{ return semicolon; }
 \n 						{ return new_line; }
 [ \t]+					/* ignore whitespace */
-.*						{ return syntax; }
+.						{ return syntax; } //possibly re-add *
 
 %%
 
