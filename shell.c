@@ -28,8 +28,9 @@ void handle_new_line() {
 }
 
 /* handle syntax */
+//TODO: Allow this to take a string so we can print out what the actual issue is
 void syntax_error_found() {
-	printf("Syntax Error\n");
+	//printf("Syntax Error\n");
 }
 
 

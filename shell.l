@@ -16,7 +16,7 @@
 ;						{ return semicolon; }
 \n 						{ return new_line; }
 [ \t]+					/* ignore whitespace */
-.*						{ return syntax; }
+.						{ yylval.arg = yytext; return syntax; }
 
 %%
 

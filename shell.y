@@ -18,33 +18,50 @@ int yylex();
 //%type <arg> quote_input;
 
 %start line
-%token ls_command cd_command exit_command 
-%token file_name word new_line quote semicolon 
-%token syntax
+%token ls_command cd_command exit_command file_name word new_line quote semicolon syntax
 
 %%
+
+/* Start */
 
 line    : command			{;}
 		| line command 		{;}
 		//| quote_input  		{;}
         ;
 
+      	//Simple Commands
 command : exit_command		{ exit(0); }
 		| ls_command		{ list_files(); }
+
+		//Complex Commands
 		| change_directory	{;}
+
+		//Other Stuff
 		| new_line 			{ handle_new_line(); }
-		| semicolon 		{;} 
+		| non_command		{ syntax_error_found(); }
+
+		//Errors
 		| syntax_error 		{ syntax_error_found(); }
 		| error 			{ syntax_error_found(); }
 		;
+
+non_command : file_name {;}
+			| word 		{;}
+			| semicolon {;}
+			;
+
+/* Complex Commands */
 
 change_directory   	: cd_command file_name  { change_directory($2); }
 					| cd_command word { change_directory($2); } 
 					//| cd_command quote_input { change_directory($2); }  
         			;
 
-syntax_error 		: syntax {;}
-					;
+/* Non-Commands */
+
+//quote_input : quote recursive_name quote { $$ = $2; }
+
+/* Recursive Helpers */
 
 //This is used to recognize a combination of words - useful for items where there might be a space and so the command is surrounded by quotes
 //This might need to be modified
@@ -53,7 +70,11 @@ syntax_error 		: syntax {;}
 			   | recursive_name word 	{ $$ = $1; }
 			   | recursive_name file_name 	{ $$ = $1; }*/
 
-//quote_input : quote recursive_name quote { $$ = $2; }
+/* Syntax */ 
+
+syntax_error 		: syntax {;}
+					;
+
 
 %%
 
