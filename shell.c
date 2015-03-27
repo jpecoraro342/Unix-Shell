@@ -29,7 +29,7 @@ void handle_new_line() {
 
 /* handle syntax */
 void syntax_error_found() {
-	//printf("Syntax Error\n");
+	printf("Syntax Error\n");
 }
 
 
@@ -54,12 +54,8 @@ void list_files() {
 
 void change_directory(char * new_directory) {
 	int success = chdir(new_directory);
-	if (success == 0) {
-		char current_directory[512];
-		getcwd(current_directory, sizeof(current_directory));
-	}
-	else {
-		printf("Error Changing Directory: %d\n", errno);
+	if (success != 0) {
+		printf("%s: %s\n", new_directory, strerror(errno));
 	}
 }
 

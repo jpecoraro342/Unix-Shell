@@ -18,7 +18,9 @@ int yylex();
 //%type <arg> quote_input;
 
 %start line
-%token ls_command cd_command exit_command file_name word new_line quote semicolon
+%token ls_command cd_command exit_command 
+%token file_name word new_line quote semicolon 
+%token syntax
 
 %%
 
@@ -31,14 +33,18 @@ command : exit_command		{ exit(0); }
 		| ls_command		{ list_files(); }
 		| change_directory	{;}
 		| new_line 			{ handle_new_line(); }
-		| error 			{ syntax_error_found(); }
 		| semicolon 		{;} 
+		| syntax_error 		{ syntax_error_found(); }
+		| error 			{ syntax_error_found(); }
 		;
 
 change_directory   	: cd_command file_name  { change_directory($2); }
 					| cd_command word { change_directory($2); } 
 					//| cd_command quote_input { change_directory($2); }  
         			;
+
+syntax_error 		: syntax {;}
+					;
 
 //This is used to recognize a combination of words - useful for items where there might be a space and so the command is surrounded by quotes
 //This might need to be modified

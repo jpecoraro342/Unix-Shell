@@ -12,10 +12,11 @@
 "exit"				   	{ return exit_command; }
 "\""					{ return quote; }
 [a-zA-Z][a-zA-Z0-9]*	{ yylval.arg = yytext; return word; }
-[a-zA-Z0-9\/.-]+		{ yylval.arg = yytext; return file_name; }
+[a-zA-Z0-9_\/.-]+		{ yylval.arg = yytext; return file_name; }
 ;						{ return semicolon; }
 \n 						{ return new_line; }
 [ \t]+					/* ignore whitespace */
+.*						{ return syntax; }
 
 %%
 
