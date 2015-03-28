@@ -1,5 +1,5 @@
 shell: lex.yy.c y.tab.c
-	gcc -g shell.c lex.yy.c y.tab.c -o shell
+	gcc -g shell.c aliaslist.c lex.yy.c y.tab.c -o shell
 
 lex.yy.c: y.tab.c shell.l
 	lex shell.l

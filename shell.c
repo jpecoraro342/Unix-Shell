@@ -10,6 +10,7 @@
 
 //My Stuff
 #include "shell.h"
+#include "aliaslist.h"
 
 extern char **environ;
 
