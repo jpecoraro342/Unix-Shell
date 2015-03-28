@@ -60,7 +60,8 @@ non_command : file_name {;}
 
 change_directory   	: cd_command file_name  { change_directory($2); }
 					| cd_command word { change_directory($2); } 
-					| cd_command quote_input { change_directory($2); }  
+					| cd_command quote_input { change_directory($2); } 
+					| cd_command {change_directory_home(); } 
         			;
 
 set_environ_var		: setenv_command word word  {	//Add a null terminated character at the true end of $2

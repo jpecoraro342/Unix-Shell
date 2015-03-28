@@ -61,6 +61,10 @@ void change_directory(char * new_directory) {
 	}
 }
 
+void change_directory_home(void) {
+	change_directory(getenv("HOME"));
+}
+
 void set_environment_variable(char *var_name, char* new_value)
 {
 	printf("VARIABLE: %s \t VALUE : %s \n", var_name, new_value);
