@@ -12,7 +12,8 @@
 "setenv"				{ return setenv_command; }
 "unsetenv"				{ return unsetenv_command; }
 "printenv"				{ return printenv_command; }
-
+"alias"					{ return alias_command; }
+"unalias"				{ return unalias_command; }
 
 "exit"				   	{ return exit_command; }
 "\""					{ return quote; }

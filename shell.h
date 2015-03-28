@@ -19,3 +19,6 @@ void change_directory_home(void);
 void set_environment_variable(char *var_name, char* new_value);
 void unset_environment_variable(char *var_name);
 void print_environment_variables(void);
+void create_alias(char *alias_name, char *alias_command);
+void list_aliases(void);
+void remove_alias(char *alias_name);

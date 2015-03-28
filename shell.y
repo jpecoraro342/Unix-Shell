@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "shell.h"
+#include "aliaslist.h"
  
 void yyerror (char *s);
 int yylex();
@@ -19,7 +20,9 @@ int yylex();
 %type <arg> quote_input;
 
 %start line
-%token ls_command cd_command exit_command setenv_command unsetenv_command printenv_command
+%token ls_command cd_command exit_command
+%token setenv_command unsetenv_command printenv_command
+%token alias_command unalias_command
 %token file_name word new_line quote semicolon 
 %token syntax
 
@@ -41,6 +44,8 @@ command : exit_command		{ exit(0); }
 		| change_directory	{;}
 		| set_environ_var		{;}
 		| unset_environ_var 	{;}
+		| aliasing_commands		{;}
+		| unaliasing_command	{;}
 
 		//Other Stuff
 		| new_line 			{ handle_new_line(); }
@@ -77,6 +82,17 @@ set_environ_var		: setenv_command word word  {	//Add a null terminated character
 					;
 
 unset_environ_var	: unsetenv_command word { unset_environment_variable($2); }
+					;
+
+aliasing_commands	: alias_command word word 	{ 
+													int word1len = strlen($2) - strlen($3);
+													$2[word1len - 1] = '\0';
+													create_alias($2, $3); 
+												}
+					| alias_command { list_aliases(); }
+					;
+
+unaliasing_command	: unalias_command word { remove_alias($2); }
 					;
 
 /* Non-Commands */

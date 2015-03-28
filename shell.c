@@ -90,3 +90,25 @@ void print_environment_variables(void)
     	printf("%s\n", *env);
     }
 }
+
+void list_aliases(void)
+{
+	//Check for success
+	print_aliases();
+}
+
+void create_alias(char *alias_name, char *alias_command)
+{
+	struct alias a;
+	a.alias_name = alias_name;
+	a.full_command = alias_command;
+	//Check for success
+	add_alias(&a);
+}
+
+
+void remove_alias(char *alias_name)
+{
+	//Check for success
+	remove_alias_with_name(alias_name);
+}
