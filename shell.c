@@ -97,11 +97,11 @@ void list_aliases(void)
 	print_aliases();
 }
 
-void create_alias(char *alias_name, char *alias_command)
+void create_alias(char *alias_name, char *full_command)
 {
 	struct alias a;
 	a.alias_name = alias_name;
-	a.full_command = alias_command;
+	a.full_command = full_command;
 	//Check for success
 	add_alias(&a);
 }
