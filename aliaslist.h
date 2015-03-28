@@ -1,6 +1,6 @@
 struct alias {
-    char *alias_name;
-    char *full_command;
+	char *alias_name;
+	char *full_command;
 };
  
 struct node {
