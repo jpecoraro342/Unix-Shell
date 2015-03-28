@@ -10,6 +10,7 @@
 
 //My Stuff
 #include "shell.h"
+#include "aliaslist.h"
 
 extern char **environ;
 
@@ -58,6 +59,10 @@ void change_directory(char * new_directory) {
 	if (success != 0) {
 		printf("%s: %s\n", new_directory, strerror(errno));
 	}
+}
+
+void change_directory_home(void) {
+	change_directory(getenv("HOME"));
 }
 
 void set_environment_variable(char *var_name, char* new_value)
