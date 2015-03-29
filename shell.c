@@ -67,18 +67,20 @@ void change_directory_home(void) {
 
 void set_environment_variable(char *var_name, char* new_value)
 {
-	printf("VARIABLE: %s \t VALUE : %s \n", var_name, new_value);
-	if (setenv(var_name, new_value, 1) != 0)
-	{
-		printf("Cannot set variable %s to value %s : %s\n", var_name, new_value, strerror(errno));
+	if (setenv(var_name, new_value, 1) == 0) {
+		printf("setenv - variable: %s\tvalue: %s\n", var_name, new_value);		
+	}
+	else {
+		printf("error :setenv - could not set %s to %s : %s\n", var_name, new_value, strerror(errno));
 	}
 }
 
-void unset_environment_variable(char *var_name)
-{
-	if (unsetenv(var_name) != 0)
-	{
-		printf("Cannot unset variable %s : %s\n", var_name, strerror(errno));
+void unset_environment_variable(char *var_name) {
+	if (unsetenv(var_name) == 0) {
+		printf("unsetenv - %s\n", var_name);	
+	}
+	else {
+		printf("error :unsetenv - could not unset %s : %s\n", var_name, strerror(errno));
 	}
 }
 
@@ -99,16 +101,31 @@ void list_aliases(void)
 
 void create_alias(char *alias_name, char *full_command)
 {
-	struct alias a;
-	a.alias_name = alias_name;
-	a.full_command = full_command;
+	char * temp_alias = malloc(strlen(alias_name));
+	char * temp_command = malloc(strlen(full_command));
+
+	strcpy(temp_alias, alias_name);
+	strcpy(temp_command, full_command);
+
+	struct alias* a = malloc(sizeof(struct alias));
+	a->alias_name = temp_alias;
+	a->full_command = temp_command;
+
 	//Check for success
-	add_alias(&a);
+	add_alias(a);
+
+	//assume succesfull
+	printf("alias - %s : %s\n", alias_name, full_command);
 }
 
 
 void remove_alias(char *alias_name)
 {
 	//Check for success
-	remove_alias_with_name(alias_name);
+	if (remove_alias_with_name(alias_name) == 0) {
+
+	}
+	else {
+
+	}
 }

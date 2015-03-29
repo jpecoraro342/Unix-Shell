@@ -12,7 +12,7 @@ void print_aliases() {
 	struct node* current = head; 
 	
 	while (current != NULL) {
-		printf("%s: %s\n", current->data->alias_name, current->data->full_command);
+		printf("%s : %s\n", current->data->alias_name, current->data->full_command);
 		current = current->next;
 	}
 }
