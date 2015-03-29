@@ -67,6 +67,9 @@ void add_alias(struct alias* alias) {
 }
 
 int remove_alias_with_name(char * alias_name) {
+	if (head == NULL) {
+		return -1;
+	}
 	if (strcmp(alias_name, head->data->alias_name) == 0) {
 		if (head->next == NULL) {
 			head = NULL;

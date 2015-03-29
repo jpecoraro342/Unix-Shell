@@ -41,7 +41,7 @@ command : exit_command		{ exit(0); }
 		| printenv_command	{ print_environment_variables(); }
 
 		//Complex Commands
-		| change_directory	{;}
+		| change_directory		{;}
 		| set_environ_var		{;}
 		| unset_environ_var 	{;}
 		| aliasing_commands		{;}
@@ -89,6 +89,11 @@ aliasing_commands	: alias_command word word 	{
 													$2[word1len - 1] = '\0';
 													create_alias($2, $3); 
 												}
+					| alias_command word quote_input	{
+															int word1len = strlen($2) - strlen($3);
+															$2[word1len - 1] = '\0';
+															create_alias($2, $3); 
+														}
 					| alias_command { list_aliases(); }
 					;
 
