@@ -58,7 +58,7 @@ command : exit_command		{ exit(0); }
 		;
 
 non_command : file_name {;}
-			| word 		{;}
+			| word 		{ check_aliases($1);}
 			| semicolon {;}
 			;
 

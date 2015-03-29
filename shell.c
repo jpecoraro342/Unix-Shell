@@ -65,13 +65,15 @@ void change_directory_home(void) {
 	change_directory(getenv("HOME"));
 }
 
+/* Environment Variables */
+
 void set_environment_variable(char *var_name, char* new_value)
 {
 	if (setenv(var_name, new_value, 1) == 0) {
 		printf("setenv - variable: %s\tvalue: %s\n", var_name, new_value);		
 	}
 	else {
-		printf("error :setenv - could not set %s to %s : %s\n", var_name, new_value, strerror(errno));
+		printf("error: setenv: could not set %s to %s : %s\n", var_name, new_value, strerror(errno));
 	}
 }
 
@@ -80,7 +82,7 @@ void unset_environment_variable(char *var_name) {
 		printf("unsetenv - %s\n", var_name);	
 	}
 	else {
-		printf("error :unsetenv - could not unset %s : %s\n", var_name, strerror(errno));
+		printf("error: unsetenv: could not unset %s : %s\n", var_name, strerror(errno));
 	}
 }
 
@@ -93,14 +95,14 @@ void print_environment_variables(void)
     }
 }
 
-void list_aliases(void)
-{
+/* Aliasing */
+
+void list_aliases(void) {
 	//Check for success
 	print_aliases();
 }
 
-void create_alias(char *alias_name, char *full_command)
-{
+void create_alias(char *alias_name, char *full_command) {
 	char * temp_alias = malloc(strlen(alias_name));
 	char * temp_command = malloc(strlen(full_command));
 
@@ -119,8 +121,7 @@ void create_alias(char *alias_name, char *full_command)
 }
 
 
-void remove_alias(char *alias_name)
-{
+void remove_alias(char *alias_name) {
 	//Check for success
 	if (remove_alias_with_name(alias_name) == 0) {
 
@@ -129,3 +130,19 @@ void remove_alias(char *alias_name)
 
 	}
 }
+
+void check_aliases(char *alias_name) {
+	struct alias* tempalias = get_alias_with_name(alias_name);
+	if (tempalias != NULL) {
+		//TODO: Run the alias
+		printf("will run command: %s\n", tempalias->full_command);
+	}
+	else {
+		printf("error: %s: command not found\n", alias_name);
+	}
+}
+
+
+
+
+

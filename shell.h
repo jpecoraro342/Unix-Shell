@@ -16,10 +16,14 @@ void list_files();
 /* Changes the directory to the specified path */
 void change_directory(char * new_directory);
 void change_directory_home(void);
+
+/* Environment Variables */
 void set_environment_variable(char *var_name, char* new_value);
 void unset_environment_variable(char *var_name);
 void print_environment_variables(void);
 
+/* Aliasing */
 void create_alias(char *alias_name, char *full_command);
 void list_aliases(void);
 void remove_alias(char *alias_name);
+void check_aliases(char *alias_name);
