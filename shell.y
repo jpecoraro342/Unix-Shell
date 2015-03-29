@@ -64,8 +64,7 @@ non_command : file_name {;}
 
 /* Complex Commands */
 
-change_directory   	: cd_command file_name  	{ change_directory($2); }
-					| cd_command word 			{ change_directory($2); } 
+change_directory   	: cd_command word_or_file  	{ change_directory($2); }
 					| cd_command quote_input 	{ change_directory($2); } 
 					| cd_command 				{ change_directory_home(); } 
         			;
@@ -103,6 +102,7 @@ word_or_file : word 		{ $$ = $1; }
 			 ;
 
 quote_input : quote recursive_name quote { $$ = $2; $$[strlen($$) - 1] = '\0'; }
+			;
 
 /* Recursive Helpers */
 
@@ -122,7 +122,9 @@ syntax_error 		: syntax {;}
 
 int main (void) {
 	handle_new_line();
-	return yyparse();
+	while (1) {
+		yyparse();
+	}
 }
 
 void yyerror (char *s) { syntax_error_found(); } 

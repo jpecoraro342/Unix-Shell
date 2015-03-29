@@ -27,3 +27,7 @@ void create_alias(char *alias_name, char *full_command);
 void list_aliases(void);
 void remove_alias(char *alias_name);
 void check_aliases(char *alias_name);
+
+/* Lex/Yacc stuff */
+void parse_string(char * input);
+void parse_file(char * new_file_name);

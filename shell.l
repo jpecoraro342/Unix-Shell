@@ -29,3 +29,5 @@
 %%
 
 int yywrap (void) {return 1;}
+
+YY_BUFFER_STATE get_current_buffer() { return YY_CURRENT_BUFFER; }

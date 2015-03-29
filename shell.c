@@ -8,6 +8,13 @@
 #include <unistd.h>
 #include <errno.h>
 
+//Lex Stuff
+typedef struct yy_buffer_state * YY_BUFFER_STATE;
+extern int yyparse();
+extern YY_BUFFER_STATE yy_scan_string(char * str);
+extern YY_BUFFER_STATE get_current_buffer();
+extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
+
 //My Stuff
 #include "shell.h"
 #include "aliaslist.h"
@@ -124,24 +131,39 @@ void create_alias(char *alias_name, char *full_command) {
 void remove_alias(char *alias_name) {
 	//Check for success
 	if (remove_alias_with_name(alias_name) == 0) {
-
+		printf("alias removed : %s\n", alias_name);
 	}
 	else {
-
+		printf("error: unalias: could not remove \"%s\" : alias not found\n", alias_name);
 	}
 }
 
 void check_aliases(char *alias_name) {
 	struct alias* tempalias = get_alias_with_name(alias_name);
 	if (tempalias != NULL) {
-		//TODO: Run the alias
-		printf("will run command: %s\n", tempalias->full_command);
+		parse_string(tempalias->full_command);
 	}
 	else {
 		printf("error: %s: command not found\n", alias_name);
 	}
 }
 
+/* Lex/Yacc */
+void parse_string(char * input) {
+	YY_BUFFER_STATE cur = get_current_buffer();
+	YY_BUFFER_STATE buffer = yy_scan_string(input);
+    yyparse();
+    yy_switch_to_buffer(cur);
+    yy_delete_buffer(buffer);
+}
+
+void parse_file(char * input_file_name) {
+	YY_BUFFER_STATE cur = get_current_buffer();
+	YY_BUFFER_STATE buffer = yy_scan_string(input_file_name); //TODO: Change this to open up the file
+    yyparse();
+    yy_switch_to_buffer(cur);
+    yy_delete_buffer(buffer);
+}
 
 
 
