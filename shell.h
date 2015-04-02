@@ -30,4 +30,4 @@ void check_aliases(char *alias_name);
 
 /* Lex/Yacc stuff */
 void parse_string(char * input);
-void parse_file(char * new_file_name);
+void parse_file(char * input_file_name);

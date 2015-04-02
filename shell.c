@@ -11,6 +11,7 @@
 //Lex Stuff
 typedef struct yy_buffer_state * YY_BUFFER_STATE;
 extern int yyparse();
+extern void yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer);
 extern YY_BUFFER_STATE yy_scan_string(char * str);
 extern YY_BUFFER_STATE get_current_buffer();
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
@@ -77,19 +78,19 @@ void change_directory_home(void) {
 void set_environment_variable(char *var_name, char* new_value)
 {
 	if (setenv(var_name, new_value, 1) == 0) {
-		printf("setenv - variable: %s\tvalue: %s\n", var_name, new_value);		
+		printf("setenv - variable: \"%s\"\tvalue: \"%s\"\n", var_name, new_value);		
 	}
 	else {
-		printf("error: setenv: could not set %s to %s : %s\n", var_name, new_value, strerror(errno));
+		printf("error: setenv: could not set \"%s\" to \"%s\" : %s\n", var_name, new_value, strerror(errno));
 	}
 }
 
 void unset_environment_variable(char *var_name) {
 	if (unsetenv(var_name) == 0) {
-		printf("unsetenv - %s\n", var_name);	
+		printf("unsetenv - \"%s\"\n", var_name);	
 	}
 	else {
-		printf("error: unsetenv: could not unset %s : %s\n", var_name, strerror(errno));
+		printf("error: unsetenv: could not unset \"%s\" : %s\n", var_name, strerror(errno));
 	}
 }
 
@@ -124,14 +125,14 @@ void create_alias(char *alias_name, char *full_command) {
 	add_alias(a);
 
 	//assume succesfull
-	printf("alias - %s : %s\n", alias_name, full_command);
+	printf("alias - \"%s\" : \"%s\"\n", alias_name, full_command);
 }
 
 
 void remove_alias(char *alias_name) {
 	//Check for success
 	if (remove_alias_with_name(alias_name) == 0) {
-		printf("alias removed : %s\n", alias_name);
+		printf("alias removed : \"%s\"\n", alias_name);
 	}
 	else {
 		printf("error: unalias: could not remove \"%s\" : alias not found\n", alias_name);
@@ -144,7 +145,7 @@ void check_aliases(char *alias_name) {
 		parse_string(tempalias->full_command);
 	}
 	else {
-		printf("error: %s: command not found\n", alias_name);
+		printf("error: \"%s\": command not found\n", alias_name);
 	}
 }
 
@@ -158,11 +159,22 @@ void parse_string(char * input) {
 }
 
 void parse_file(char * input_file_name) {
+	/*
+	FILE *in = fopen(input_file_name, "r");
+	if (in == NULL) {
+		printf("error: invalid file: %s\n", input_file_name);
+		return;
+	}
+
+    fseek(in, 0, SEEK_END);
+    unsigned long len = (unsigned long)ftell(in);
+
 	YY_BUFFER_STATE cur = get_current_buffer();
-	YY_BUFFER_STATE buffer = yy_scan_string(input_file_name); //TODO: Change this to open up the file
+	YY_BUFFER_STATE buffer = yy_scan_buffer(in, len);
     yyparse();
     yy_switch_to_buffer(cur);
     yy_delete_buffer(buffer);
+    */
 }
 
 

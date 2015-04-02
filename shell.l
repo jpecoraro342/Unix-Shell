@@ -15,8 +15,8 @@
 "alias"					{ return alias_command; }
 "unalias"				{ return unalias_command; }
 
-"exit"				   	{ return exit_command; }
-"\""					{ return quote; }
+"bye"				   	{ return exit_command; }
+"\""[*? ${},<>|&\"@!#%'=~.:/:A-Za-z0-9]+"\""	{ yylval.arg = yytext; return quotes; }
 
 [a-zA-Z0-9]+			{ yylval.arg = yytext; return word; }
 [a-zA-Z0-9_\/.-]+		{ yylval.arg = yytext; return file_name; }

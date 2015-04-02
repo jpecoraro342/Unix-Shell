@@ -12,19 +12,20 @@ int yylex();
 
 %}
 
-%union { char *arg; }
+%union { char *cmd; char *arg; }
 
 %type <arg> file_name;
 %type <arg> word;
 %type <arg> word_or_file;
-%type <arg> recursive_name;
+//%type <arg> recursive_name;
 %type <arg> quote_input;
+%type <arg> quotes;
 
 %start line
 %token ls_command cd_command exit_command
 %token setenv_command unsetenv_command printenv_command
 %token alias_command unalias_command
-%token file_name word new_line quote semicolon 
+%token file_name word new_line quotes semicolon 
 %token syntax
 
 %%
@@ -33,11 +34,12 @@ int yylex();
 
 line    : command			{;}
 		| line command 		{;}
-		| quote_input  		{;}
+		//| quote_input  		{;}
         ;
 
-      	//Simple Commands
-command : exit_command		{ exit(0); }
+      	
+command : //Simple Commands
+		exit_command		{ exit(0); }
 		| ls_command		{ list_files(); }
 		| printenv_command	{ print_environment_variables(); }
 
@@ -79,13 +81,13 @@ set_environ_var		: setenv_command word word_or_file  {	//Add a null terminated c
 unset_environ_var	: unsetenv_command word 	{ unset_environment_variable($2); }
 					;
 
-aliasing_commands	: alias_command word word 	{ 
+aliasing_commands	: alias_command word word_or_file 	{ 
 													int word1len = strlen($2) - strlen($3);
 													$2[word1len - 1] = '\0';
 													create_alias($2, $3); 
 												}
-					| alias_command word quote_input	{
-															int word1len = strlen($2) - strlen($3);
+					| alias_command word quote_input	{	//+1 is for quote offset
+															int word1len = strlen($2) - (strlen($3) + 1);
 															$2[word1len - 1] = '\0';
 															create_alias($2, $3); 
 														}
@@ -101,16 +103,16 @@ word_or_file : word 		{ $$ = $1; }
 			 | file_name 	{ $$ = $1; }
 			 ;
 
-quote_input : quote recursive_name quote { $$ = $2; $$[strlen($$) - 1] = '\0'; }
+quote_input : quotes { $$ = $1; $$[strlen($$) - 1] = '\0'; $$ = $$ + 1; }
 			;
 
 /* Recursive Helpers */
 
 //This is used to recognize a combination of words - useful for items where there might be a space and so the command is surrounded by quotes
 //This might need to be modified
-recursive_name : word_or_file					{ $$ = $1; }
+/*recursive_name : word_or_file					{ $$ = $1; }
 			   | recursive_name word_or_file	{ $$ = $1; }
-			   ;
+			   ;*/
 
 /* Syntax */ 
 
