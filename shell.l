@@ -14,11 +14,11 @@
 "printenv"				{ return printenv_command; }
 "alias"					{ return alias_command; }
 "unalias"				{ return unalias_command; }
-
 "bye"				   	{ return exit_command; }
-"\""[*? ${},<>|&\"@!#%'=~.:/:A-Za-z0-9]+"\""	{ yylval.arg = yytext; return quotes; }
 
-[a-zA-Z0-9]+			{ yylval.arg = yytext; return word; }
+"\""[*? ${}_,<>|&\"@!#%'=~.:/:A-Za-z0-9]+"\""	{ yylval.arg = yytext; return quotes; }
+[*?@!#%',=~.:/:A-Za-z0-9]+		{ yylval.arg = yytext; return word; }
+"${"[*?@!#%,'=~.:/:A-Za-z0-9]+"}"	{ yylval.arg = yytext; return environ_var; } 
 [a-zA-Z0-9_\/.-]+		{ yylval.arg = yytext; return file_name; }
 ;						{ return semicolon; }
 \n 						{ return new_line; }

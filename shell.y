@@ -20,12 +20,13 @@ int yylex();
 //%type <arg> recursive_name;
 %type <arg> quote_input;
 %type <arg> quotes;
+%type <arg> environ_var;
 
 %start line
 %token ls_command cd_command exit_command
 %token setenv_command unsetenv_command printenv_command
 %token alias_command unalias_command
-%token file_name word new_line quotes semicolon 
+%token file_name word new_line quotes environ_var semicolon 
 %token syntax
 
 %%
@@ -60,7 +61,9 @@ command : //Simple Commands
 		;
 
 non_command : file_name {;}
-			| word 		{ check_aliases($1);}
+			| word 		{ check_aliases($1); }
+			| quotes	{ check_aliases($1); }
+			| environ_var	{;}
 			| semicolon {;}
 			;
 
