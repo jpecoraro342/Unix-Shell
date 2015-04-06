@@ -67,6 +67,12 @@ void change_directory(char * new_directory) {
 	if (success != 0) {
 		printf("%s: %s\n", new_directory, strerror(errno));
 	}
+	else {
+		char *var_name = "PWD";
+		char current_directory[512]; 
+		getcwd(current_directory, sizeof(current_directory));
+		set_environment_variable(var_name, current_directory);
+	}
 }
 
 void change_directory_home(void) {
