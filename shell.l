@@ -17,9 +17,12 @@
 "bye"				   	{ return exit_command; }
 
 "\""[*? ${}_,<>|&\"@!#%'=~.:/:A-Za-z0-9]+"\""	{ yylval.arg = yytext; return quotes; }
-[*?@!#%',=~.:/:A-Za-z0-9]+		{ yylval.arg = yytext; return word; }
-"${"[*?@!#%,'=~.:/:A-Za-z0-9]+"}"	{ yylval.arg = yytext; return environ_var; } 
+[*?@!#%',=~.:/:A-Za-z0-9]+						{ yylval.arg = yytext; return word; }
 [a-zA-Z0-9_\/.-]+		{ yylval.arg = yytext; return file_name; }
+"<"						{ return read_from; }
+">"						{ return write_to; }
+"|"						{ return piping; }
+"&"						{ return ampersand; }
 ;						{ return semicolon; }
 \n 						{ return new_line; }
 [ \t]+					/* ignore whitespace */

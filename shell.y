@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <signal.h>
 
 #include "shell.h"
 #include "aliaslist.h"
@@ -20,13 +22,13 @@ int yylex();
 //%type <arg> recursive_name;
 %type <arg> quote_input;
 %type <arg> quotes;
-%type <arg> environ_var;
 
 %start line
 %token ls_command cd_command exit_command
 %token setenv_command unsetenv_command printenv_command
 %token alias_command unalias_command
-%token file_name word new_line quotes environ_var semicolon 
+%token file_name word new_line quotes semicolon 
+%token read_from write_to piping ampersand
 %token syntax
 
 %%
@@ -63,7 +65,6 @@ command : //Simple Commands
 non_command : file_name {;}
 			| word 		{ check_aliases($1); }
 			| quotes	{ check_aliases($1); }
-			| environ_var	{;}
 			| semicolon {;}
 			;
 
@@ -71,7 +72,7 @@ non_command : file_name {;}
 
 change_directory   	: cd_command word_or_file  	{ change_directory($2); }
 					| cd_command quote_input 	{ change_directory($2); } 
-					| cd_command 				{ change_directory_home(); } 
+					| cd_command				{ change_directory_home(); } 
         			;
 
 set_environ_var		: setenv_command word word_or_file  {	//Add a null terminated character at the true end of $2
@@ -126,9 +127,19 @@ syntax_error 		: syntax {;}
 %%
 
 int main (void) {
+
+	//ADD HANDLE FOR CTRL+C ESCAPE
+	printf("Welcome to the Sperling & Pecoraro Shell!\n");
 	handle_new_line();
 	while (1) {
-		yyparse();
+		//SAVE ENTIRE LINE AND CHECK FOR ALIASES/ENVIRONMENT VARIABLES
+		
+		/* Save the entire command line */
+		char buffer[1024];
+		fgets(buffer,1024,stdin);
+		strcpy(buffer,replace_environ_vars_and_aliases(buffer));
+		//puts(buffer);
+		parse_string(buffer);	
 	}
 }
 

@@ -21,6 +21,7 @@ void change_directory_home(void);
 void set_environment_variable(char *var_name, char* new_value);
 void unset_environment_variable(char *var_name);
 void print_environment_variables(void);
+char * check_environment_variables(char *buffer);
 
 /* Aliasing */
 void create_alias(char *alias_name, char *full_command);
@@ -31,3 +32,5 @@ void check_aliases(char *alias_name);
 /* Lex/Yacc stuff */
 void parse_string(char * input);
 void parse_file(char * input_file_name);
+
+char * replace_environ_vars_and_aliases(char* buffer);

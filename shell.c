@@ -11,7 +11,7 @@
 //Lex Stuff
 typedef struct yy_buffer_state * YY_BUFFER_STATE;
 extern int yyparse();
-extern void yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer);
+extern void yy_switch_to_buffer (YY_BUFFER_STATE  new_buffer);
 extern YY_BUFFER_STATE yy_scan_string(char * str);
 extern YY_BUFFER_STATE get_current_buffer();
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
@@ -153,6 +153,69 @@ void check_aliases(char *alias_name) {
 	else {
 		printf("error: \"%s\": command not found\n", alias_name);
 	}
+}
+
+char * check_environment_variables(char *buffer)
+{
+	char *start_pointer;
+	char *end_pointer;
+	char environ_buffer[1024];
+	char environment;
+
+	char *return_buffer;
+	char *return_buffer_reference;
+
+	if((start_pointer = strstr(buffer, "${")) != NULL)
+	{
+		if((end_pointer = strchr(start_pointer+2, '}')) != NULL)
+		{
+
+			int size = end_pointer - start_pointer-2;
+			strncpy(environ_buffer, start_pointer+2, size);
+			puts(environ_buffer);
+
+			if(getenv(environ_buffer) != NULL)
+			{
+				printf("%s\n", getenv(environ_buffer));
+				return_buffer = malloc(1024);
+				int before_var_size = start_pointer - buffer + 1;
+				strncpy(return_buffer, buffer, before_var_size-1);
+				strcat(return_buffer, getenv(environ_buffer));
+
+				return_buffer_reference = &return_buffer[strlen(return_buffer)-1];
+				strncpy(return_buffer_reference+1, end_pointer+1, strlen(end_pointer)-1);
+
+				puts(return_buffer);
+
+				return return_buffer;
+			}
+			else
+			{
+				printf("Environment variable \"%s\" not found.\n", environ_buffer);
+				return NULL;			
+			}
+			
+		}
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+char * replace_environ_vars_and_aliases(char* buffer)
+{
+	char * return_buffer = check_environment_variables(buffer);
+
+	while(strcmp(return_buffer,buffer) != 0)
+	{
+		buffer = return_buffer;
+		return_buffer = check_environment_variables(buffer);
+	}
+
+	//ADD CASE FOR NULL
+
+	return return_buffer;
 }
 
 /* Lex/Yacc */
