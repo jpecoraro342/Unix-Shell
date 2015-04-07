@@ -131,15 +131,11 @@ int main (void) {
 	//ADD HANDLE FOR CTRL+C ESCAPE
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
 	handle_new_line();
-	while (1) {
-		//SAVE ENTIRE LINE AND CHECK FOR ALIASES/ENVIRONMENT VARIABLES
-		
+	while (1) {	
 		/* Save the entire command line */
-		char buffer[1024];
-		fgets(buffer,1024,stdin);
-		strcpy(buffer,replace_environ_vars_and_aliases(buffer));
-		//puts(buffer);
-		parse_string(buffer);	
+		char true_buffer[1024];
+		preparse(true_buffer);
+		parse_string(true_buffer);	
 	}
 }
 

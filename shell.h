@@ -33,4 +33,5 @@ void check_aliases(char *alias_name);
 void parse_string(char * input);
 void parse_file(char * input_file_name);
 
+void preparse(char * true_buffer);
 char * replace_environ_vars_and_aliases(char* buffer);

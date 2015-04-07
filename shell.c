@@ -117,8 +117,8 @@ void list_aliases(void) {
 }
 
 void create_alias(char *alias_name, char *full_command) {
-	char * temp_alias = malloc(strlen(alias_name));
-	char * temp_command = malloc(strlen(full_command));
+	char * temp_alias = malloc(strlen(alias_name)+1);
+	char * temp_command = malloc(strlen(full_command)+1);
 
 	strcpy(temp_alias, alias_name);
 	strcpy(temp_command, full_command);
@@ -160,7 +160,6 @@ char * check_environment_variables(char *buffer)
 	char *start_pointer;
 	char *end_pointer;
 	char environ_buffer[1024];
-	char environment;
 
 	char *return_buffer;
 	char *return_buffer_reference;
@@ -171,13 +170,15 @@ char * check_environment_variables(char *buffer)
 		{
 
 			int size = end_pointer - start_pointer-2;
+			//initialize environ_buffer to 0 before strncopy
+			memset(environ_buffer, '\0', 1024);
 			strncpy(environ_buffer, start_pointer+2, size);
 			puts(environ_buffer);
 
 			if(getenv(environ_buffer) != NULL)
 			{
 				printf("%s\n", getenv(environ_buffer));
-				return_buffer = malloc(1024);
+				return_buffer = calloc(1024,sizeof(char));
 				int before_var_size = start_pointer - buffer + 1;
 				strncpy(return_buffer, buffer, before_var_size-1);
 				strcat(return_buffer, getenv(environ_buffer));
@@ -199,32 +200,48 @@ char * check_environment_variables(char *buffer)
 	}
 	else
 	{
+		//printf("Did not find environment variable.\n");
 		return NULL;
 	}
 }
 
 char * replace_environ_vars_and_aliases(char* buffer)
 {
-	char * return_buffer = check_environment_variables(buffer);
-
-	while(strcmp(return_buffer,buffer) != 0)
+	char * temp_buffer = check_environment_variables(buffer);
+	puts(buffer);
+	if(temp_buffer != NULL)
 	{
-		buffer = return_buffer;
-		return_buffer = check_environment_variables(buffer);
+	    puts(temp_buffer);
+	    while((temp_buffer != NULL) && (strcmp(temp_buffer,buffer) != 0))
+	    {
+		strcpy(buffer,temp_buffer);
+		free(temp_buffer);
+		temp_buffer = check_environment_variables(buffer);
+	    }
 	}
+	char *returned_buffer = malloc(1024);
+	memcpy(returned_buffer, buffer, 1024);
+	
+	return returned_buffer;
+}
 
-	//ADD CASE FOR NULL
-
-	return return_buffer;
+/* Reads the entire command line from the terminal, parses environment variables, and aliases. */
+void preparse(char * true_buffer) {
+	char buffer[1024];
+	fgets(buffer,1024,stdin);
+	char * return_buffer = replace_environ_vars_and_aliases(buffer);
+	strcpy(true_buffer, return_buffer);
+	//free(return_buffer);
 }
 
 /* Lex/Yacc */
 void parse_string(char * input) {
-	YY_BUFFER_STATE cur = get_current_buffer();
+	//puts(input);
+	//YY_BUFFER_STATE cur = get_current_buffer();
 	YY_BUFFER_STATE buffer = yy_scan_string(input);
-    yyparse();
-    yy_switch_to_buffer(cur);
-    yy_delete_buffer(buffer);
+    	yyparse();
+   	//yy_switch_to_buffer(cur);
+   	//yy_delete_buffer(buffer);
 }
 
 void parse_file(char * input_file_name) {
