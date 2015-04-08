@@ -16,8 +16,8 @@
 "unalias"				{ return unalias_command; }
 "bye"				   	{ return exit_command; }
 
-"\""[*? ${}_,<>|&\"@!#%'=~.:/:A-Za-z0-9]+"\""	{ yylval.arg = yytext; return quotes; }
-[*?@!#%',=~.:/:A-Za-z0-9]+						{ yylval.arg = yytext; return word; }
+"\""[*? ${}_,<>|&\"@!#%'=~.:/:A-Za-z0-9]+"\""	{ yylval.arg = strdup(yytext); return quotes; }
+[*?@!#%'_,=~\.:/:A-Za-z0-9]+						{ yylval.arg = strdup(yytext); return word; }
 [a-zA-Z0-9_\/.-]+		{ yylval.arg = yytext; return file_name; }
 "<"						{ return read_from; }
 ">"						{ return write_to; }

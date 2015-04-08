@@ -164,6 +164,7 @@ char * check_environment_variables(char *buffer)
 	char *return_buffer;
 	char *return_buffer_reference;
 
+	
 	if((start_pointer = strstr(buffer, "${")) != NULL)
 	{
 		if((end_pointer = strchr(start_pointer+2, '}')) != NULL)
@@ -231,7 +232,7 @@ void preparse(char * true_buffer) {
 	fgets(buffer,1024,stdin);
 	char * return_buffer = replace_environ_vars_and_aliases(buffer);
 	strcpy(true_buffer, return_buffer);
-	//free(return_buffer);
+	//free(return_buffer); SUPER MAJOR ISSUE!!!!
 }
 
 /* Lex/Yacc */
@@ -239,9 +240,9 @@ void parse_string(char * input) {
 	//puts(input);
 	//YY_BUFFER_STATE cur = get_current_buffer();
 	YY_BUFFER_STATE buffer = yy_scan_string(input);
-    	yyparse();
+    yyparse();
    	//yy_switch_to_buffer(cur);
-   	//yy_delete_buffer(buffer);
+   	//yy_delete_buffer(buffer); //MAJOR ISSUE!!!
 }
 
 void parse_file(char * input_file_name) {

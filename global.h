@@ -15,15 +15,27 @@
 
 /* command line arguments structure */
 typedef struct comargs {
-	char *args[MAXARGS};
-} ARGTAB
+	char *args[MAXARGS];
+} ARGTAB;
 
 /* command line structure */
 typedef struct com {
 	char *comname;
-	int remote;
+	//int remote;
 	int infd;
 	int outfd;
 	int nargs;
-	ARGTAB *atptr;
+	ARGTAB *argptr;
 } COMMAND;
+
+
+/* Externals */
+extern COMMAND comtab[MAXCMDS];
+extern int eventCount;
+extern int builtin;
+extern int currcmd;
+extern int currarg;
+
+
+
+#define NIL(x) (x *)0
