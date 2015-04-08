@@ -24,8 +24,7 @@
 "|"						{ return piping; }
 "&"						{ return ampersand; }
 ;						{ return semicolon; }
-\n 						{ return new_line; }
-[ \t]+					/* ignore whitespace */
+[ \t\n]+				/* ignore whitespace */
 .						{ yylval.arg = yytext; return syntax; }
 
 

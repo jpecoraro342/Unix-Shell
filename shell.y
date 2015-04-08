@@ -63,8 +63,8 @@ command : //Simple Commands
 		;
 
 non_command : file_name {;}
-			| word 		{ check_aliases($1); }
-			| quotes	{ check_aliases($1); }
+			| word 		{;}
+			| quotes	{;}
 			| semicolon {;}
 			;
 
@@ -130,8 +130,9 @@ int main (void) {
 
 	//ADD HANDLE FOR CTRL+C ESCAPE
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
-	handle_new_line();
 	while (1) {	
+		handle_new_line();
+		
 		/* Save the entire command line */
 		char true_buffer[1024];
 		preparse(true_buffer);
