@@ -45,6 +45,10 @@ void handle_new_line() {
 	builtin = 1; //Default to builtin
 	append = 0;	 //Default to not append to <EOF> during output redirection
 
+	print_prompt();
+}
+
+void print_prompt() {
 	char current_directory[512];
 	getcwd(current_directory, sizeof(current_directory));
 
