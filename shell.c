@@ -38,6 +38,7 @@ void shell_init(void) {
 /* Cleanup for when a new line has been entered - printing stuff, etc. */
 void handle_new_line() {
 	resetVisited(); //Clears the Alias Loop Stuff
+	clear_command_table(); //Clears the command table	
 
 	currcmd = 0;
 	currarg = 0; //First arg is reserved for the command
@@ -52,6 +53,19 @@ void handle_new_line() {
 	getlogin_r(current_user, sizeof(current_user));
 
 	printf("%s:%s $ ", current_user, path_extension);
+}
+
+void clear_command_table() {
+	int i, j;
+	for(i=0; i<=currcmd; i++)
+	{
+		for(j=0; j<=comtab[i].nargs; j++)
+		{
+			comtab[i].argptr->args[j] = NULL;
+		}
+		comtab[i].comname = NULL;
+		comtab[i].nargs = 0;
+	}
 }
 
 /* Handle Syntax */

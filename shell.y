@@ -22,6 +22,7 @@ int yylex();
 %type <arg> word;
 %type <arg> quote_input;
 %type <arg> quotes;
+%type <arg> word_or_quote;
 
 %start line
 %token cd_command exit_command
@@ -112,16 +113,20 @@ path_command : word				{
 
 /* Non-Commands */
 
-arguments 	: word 				{ 
+arguments 	: word_or_quote				{ 
 											//printf("ARG: word: %s\n", $1);							
 											currarg = 1; /*1st arg reserved for comm.*/
 											comtab[currcmd].argptr->args[currarg++] = $1; 
 										}
-			| arguments word	{ 
+			| arguments word_or_quote	{ 
 											//printf("ARG: ARGUMENTS word: %s\n", $2);
 											comtab[currcmd].argptr->args[currarg++] = $2;  
 										}
 		    ;
+
+word_or_quote : quote_input { $$ = $1; }
+			  | word { $$ = $1; }
+			  ;
 
 quote_input : quotes { $$ = $1; $$[strlen($$) - 1] = '\0'; $$ = $$ + 1; }
 			;
