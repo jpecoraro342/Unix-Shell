@@ -19,6 +19,10 @@
 #define STDOUT 1
 #define STDERR 2
 
+//File IO
+extern int saved_output;
+extern int saved_input;
+
 /* command line arguments structure */
 typedef struct comargs {
 	char *args[MAXARGS];

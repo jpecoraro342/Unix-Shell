@@ -6,4 +6,9 @@ int builtin;
 int eventCount;
 int currcmd;
 int currarg;
+int append;
 COMMAND comtab[MAXCMDS];
+
+//File IO
+int saved_output = STDOUT;
+int saved_input = STDIN;

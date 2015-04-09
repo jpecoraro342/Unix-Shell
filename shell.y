@@ -56,6 +56,10 @@ command : //Simple Commands
 		//Path Commands
 		| path_command			{ eventCount++; builtin = 0; }
 
+		//IO Redirection Commands
+		| input 		{;}
+		| output 		{;}
+
 		//Errors
 		| syntax_error 		{ syntax_error_found(); }
 		| error 			{ syntax_error_found(); }
@@ -155,7 +159,8 @@ output : write_to word 	{
 	   									//comtab[currcmd-1].outfd = BADFD;
 	   									switch_output($3);
 	   									append = 1;
-	   								}	   
+	   								}	
+	   	;   
 
 %%
 

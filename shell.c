@@ -22,16 +22,14 @@ extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 #include "aliaslist.h"
 #include "global.h"
 
-//File IO
-int saved_output = STDOUT;
-int saved_input = STDIN;
-
 extern char **environ;
 
 /* Shell Interfacing */
 
 void shell_init(void) {
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
+
+
 
 	int i;
 	for(i = 0; i<MAXCMDS; i++)
@@ -51,8 +49,10 @@ void handle_new_line() {
 	append = 0;	 //Default to not append to <EOF> during output redirection
 
 	/* Restore STDOUT */
-	dup2(saved_output, STDOUT);
-	close(saved_output);
+	if (saved_output != STDOUT) {
+		dup2(saved_output, STDOUT);
+		close(saved_output);
+	}
 
 	/* TODO: Restore STDIN */
 
