@@ -1,10 +1,12 @@
 
 /* Shell Interfacing */
+void shell_init(void);
 
-/* Cleanup for when a new line has been entered - printing stuff, etc. */
+/* Cleanup */
 void handle_new_line();
+void free_memory();
 
-/* handle syntax */
+/* Handle syntax */
 void syntax_error_found();
 
 /* System Functions */

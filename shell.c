@@ -25,9 +25,23 @@ extern char **environ;
 
 /* Shell Interfacing */
 
+void shell_init(void) {
+	printf("Welcome to the Sperling & Pecoraro Shell!\n");
+
+	int i;
+	for(i = 0; i<MAXCMDS; i++)
+	{
+		comtab[i].argptr = (ARGTAB *)malloc(sizeof(ARGTAB));
+	}		
+}
+
 /* Cleanup for when a new line has been entered - printing stuff, etc. */
 void handle_new_line() {
 	resetVisited(); //Clears the Alias Loop Stuff
+
+	currcmd = 0;
+	currarg = 0; //First arg is reserved for the command
+	builtin = 1; //Default to builtin
 
 	char current_directory[512];
 	getcwd(current_directory, sizeof(current_directory));
@@ -73,7 +87,7 @@ void change_directory(char * new_directory) {
 		char *var_name = "PWD";
 		char current_directory[512]; 
 		getcwd(current_directory, sizeof(current_directory));
-		set_environment_variable(var_name, current_directory);
+		setenv(var_name, current_directory, 1);
 	}
 }
 
@@ -165,7 +179,7 @@ struct alias* check_aliases(char *alias_name) {
 /* Pre Parsing */
 
 char* replace_environ_vars_and_aliases(char* buffer) {
-	printf("Orignal Input: \"%s\"\n", buffer);
+	//printf("Orignal Input: \"%s\"\n", buffer);
 	if (strstr(buffer, "alias") == buffer) {
 		//printf("Don't Replace Variables\n");
 		return buffer;
@@ -175,10 +189,10 @@ char* replace_environ_vars_and_aliases(char* buffer) {
 	if (alias_buffer == NULL) {
 		return "";
 	}
-	printf("Post Alias Input: \"%s\"\n", alias_buffer);
+	//printf("Post Alias Input: \"%s\"\n", alias_buffer);
 	char* environ_buffer = replace_environ_vars(alias_buffer);
 
-	printf("Post Pre-Parsing Input: \"%s\"\n", environ_buffer);
+	//printf("Post Pre-Parsing Input: \"%s\"\n", environ_buffer);
 	
 	return environ_buffer;
 }
@@ -242,7 +256,7 @@ char* replace_environ_vars(char* buffer) {
 	char* temp_buffer = check_environment_variables(buffer);
 	if(temp_buffer != NULL)
 	{
-	    puts(temp_buffer);
+	    //puts(temp_buffer);
 	    while((temp_buffer != NULL) && (strcmp(temp_buffer,buffer) != 0))
 	    {
 			strcpy(buffer,temp_buffer);
@@ -275,11 +289,11 @@ char* check_environment_variables(char *buffer)
 			//initialize environ_buffer to 0 before strncopy
 			memset(environ_buffer, '\0', 1024);
 			strncpy(environ_buffer, start_pointer+2, size);
-			puts(environ_buffer);
+			//puts(environ_buffer);
 
 			if(getenv(environ_buffer) != NULL)
 			{
-				printf("%s\n", getenv(environ_buffer));
+				//printf("%s\n", getenv(environ_buffer));
 				return_buffer = calloc(1024,sizeof(char));
 				int before_var_size = start_pointer - buffer + 1;
 				strncpy(return_buffer, buffer, before_var_size-1);
@@ -288,7 +302,7 @@ char* check_environment_variables(char *buffer)
 				return_buffer_reference = &return_buffer[strlen(return_buffer)-1];
 				strncpy(return_buffer_reference+1, end_pointer+1, strlen(end_pointer)-1);
 
-				puts(return_buffer);
+				//puts(return_buffer);
 
 				return return_buffer;
 			}
@@ -341,6 +355,8 @@ void parse_file(char * input_file_name) {
     */
 }
 
+//Process Handling
+
 void executeIt(void)
 {
 	pid_t process = fork ();
@@ -358,5 +374,16 @@ void executeIt(void)
 	{
 		fprintf (stderr, "Can't fork!\n");
 		exit (2);
+	}
+}
+
+//Clean-up
+
+void free_memory(void)
+{
+	int i;
+	for(i = 0; i<MAXCMDS; i++)
+	{
+		free(comtab[i].argptr);
 	}
 }

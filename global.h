@@ -13,6 +13,8 @@
 #define FIRST 2
 #define LAST 3
 
+#define PATH_EXECUTABLE builtin == 0
+
 /* command line arguments structure */
 typedef struct comargs {
 	char *args[MAXARGS];
