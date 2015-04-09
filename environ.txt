@@ -1,0 +1,10 @@
+alias test "echo ${PWD}"
+alias test2 "echo ${HOME}"
+alias test3 "echo ${PATH}"
+alias test4 "cd ${HOME}/.."
+alias
+test
+test2
+test3
+test4
+test

@@ -1,0 +1,12 @@
+alias test "cd .."
+alias test2 test
+alias test3 "ls"
+alias test4 "cd ${HOME}"
+alias
+test2
+test3
+test4
+unalias test
+unalias test2
+unalias test3
+unalias test4

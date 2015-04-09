@@ -79,19 +79,11 @@ set_environ_var		: setenv_command word word  {	//Add a null terminated character
 														}
 					;
 
-unset_environ_var	: unsetenv_command word 	{ unset_environment_variable($2); }
+unset_environ_var	: unsetenv_command word 			{ unset_environment_variable($2); }
 					;
 
-aliasing_commands	: alias_command word word 	{ 
-															int word1len = strlen($2) - strlen($3);
-															$2[word1len - 1] = '\0';
-															create_alias($2, $3); 
-														}
-					| alias_command word quote_input	{	//+1 is for quote offset
-															int word1len = strlen($2) - (strlen($3) + 1);
-															$2[word1len - 1] = '\0';
-															create_alias($2, $3); 
-														}
+aliasing_commands	: alias_command word word 			{ create_alias($2, $3); }
+					| alias_command word quote_input	{ create_alias($2, $3); }
 					| alias_command 					{ list_aliases(); }
 					;
 

@@ -167,8 +167,8 @@ void list_aliases(void) {
 }
 
 void create_alias(char *alias_name, char *full_command) {
-	char * temp_alias = malloc(strlen(alias_name)+1);
-	char * temp_command = malloc(strlen(full_command)+1);
+	char * temp_alias = malloc(strlen(alias_name) + 1);
+	char * temp_command = malloc(strlen(full_command) + 1);
 
 	strcpy(temp_alias, alias_name);
 	strcpy(temp_command, full_command);
@@ -233,9 +233,9 @@ char* replace_environ_vars_and_aliases(char* buffer) {
 
 char* replace_aliases(char* buffer) {
 	//printf("replace aliases in \"%s\"\n", buffer);
-	char *buffer_copy = malloc(strlen(buffer));
+	char *buffer_copy = malloc(strlen(buffer) + 1);
 	strcpy(buffer_copy, buffer);
-	char *first_word = malloc(strlen(buffer));
+	char *first_word = malloc(strlen(buffer) + 1);
 
 	if (strchr(buffer_copy, ' ') != NULL) {
 		first_word = strtok(buffer_copy, " \"");
@@ -266,11 +266,11 @@ char* replace_aliases(char* buffer) {
 			int final_new_length = strlen(buffer) - original_length + replace_length;
 
 			//copy of replacement string - not sure if we need to do this
-			char *full_command = malloc(replace_length);
+			char *full_command = malloc(replace_length + 1);
 			strcpy(full_command, alias->full_command);
 
 			//create a new string
-			char *replacement_buffer = malloc(final_new_length);
+			char *replacement_buffer = malloc(final_new_length + 1);
 			strcat(replacement_buffer, full_command);
 			strcat(replacement_buffer, buffer+original_length);
 
@@ -428,20 +428,21 @@ void switch_input(char *file_name) {
 
 void executeIt(void)
 {
-	pid_t process = fork ();
+	pid_t process = fork();
 
 	if (process > 0)			/* parent */
 		wait ((int *) 0);		/* null pointer - return value not saved */
 	else if (process == 0)		/* child */
 	{	/* execute program */
 		execvp (comtab[currcmd].comname, comtab[currcmd].argptr->args);
+
 		/* some problem if exec returns */
-		printf("Error: %s: Command not found.\n", comtab[currcmd].comname);
+		printf("error: %s: %s\n", comtab[currcmd].comname, strerror(errno));
 		exit (1);
 	}
 	else if ( process == -1)     /* can't create a new process */
 	{
-		fprintf (stderr, "Can't fork!\n");
+		printf ("error: can't fork process: %s", strerror(errno));
 		exit (2);
 	}
 }

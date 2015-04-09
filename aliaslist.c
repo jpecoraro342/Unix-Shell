@@ -67,15 +67,28 @@ void add_alias(struct alias* alias) {
 }
 
 int remove_alias_with_name(char * alias_name) {
+	struct node* temp_node;
+
 	if (head == NULL) {
 		return -1;
 	}
 	if (strcmp(alias_name, head->data->alias_name) == 0) {
 		if (head->next == NULL) {
+			free(head->data->alias_name);
+			free(head->data->full_command);
+			free(head->data);
+			free(head);
+
 			head = NULL;
 		}
 		else {
+			temp_node = head;
 			head = head->next;
+
+			free(temp_node->data->alias_name);
+			free(temp_node->data->full_command);
+			free(temp_node->data);
+			free(temp_node);
 		}
 		
 		return 0;
@@ -87,6 +100,12 @@ int remove_alias_with_name(char * alias_name) {
 	while (current != NULL) {
 		if (strcmp(alias_name, current->data->alias_name) == 0) {
 			previous->next = current->next;
+
+			free(current->data->alias_name);
+			free(current->data->full_command);
+			free(current->data);
+			free(current);
+
 			return 0;
 		}
 
