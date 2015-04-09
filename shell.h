@@ -5,6 +5,7 @@ void shell_init(void);
 /* Cleanup */
 void handle_new_line();
 void print_prompt();
+void clear_command_table();
 void free_memory();
 
 /* Handle syntax */
