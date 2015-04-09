@@ -1,0 +1,3 @@
+ls no.c no.h aliaslist.no
+ls *.c *.h aliaslist.?
+ls *.cpp

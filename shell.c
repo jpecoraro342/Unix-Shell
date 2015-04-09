@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <glob.h>
 
 //Lex Stuff
 typedef struct yy_buffer_state * YY_BUFFER_STATE;
@@ -225,10 +226,11 @@ char* replace_environ_vars_and_aliases(char* buffer) {
 	}
 	//printf("Post Alias Input: \"%s\"\n", alias_buffer);
 	char* environ_buffer = replace_environ_vars(alias_buffer);
+	char* wildcard_buffer = wildcard_expansion(environ_buffer);
 
 	//printf("Post Pre-Parsing Input: \"%s\"\n", environ_buffer);
 	
-	return environ_buffer;
+	return wildcard_buffer;
 }
 
 char* replace_aliases(char* buffer) {
@@ -349,6 +351,79 @@ char* check_environment_variables(char *buffer)
 		}
 	}
 	return NULL;
+}
+
+char * wildcard_expansion(char * buffer) {
+	//make a copy so we can tokenize it
+	char *buffer_copy = malloc(strlen(buffer) + 1);
+	strcpy(buffer_copy, buffer);
+
+	//if there are no spaces, we can't expand it.. I think?
+	if (strchr(buffer_copy, ' ') != NULL) {
+		//remove newline
+		char *newline = strchr(buffer_copy, '\n');
+		if (newline != NULL) {
+			int loc = (int) (newline - buffer_copy);
+			buffer_copy[loc] = '\0';
+		}
+
+		char* word = strtok(buffer_copy, " \"");
+
+		//Look through each word until we find a matching * or ?
+		while (word != NULL && strchr(word, '*') == NULL && strchr(word, '?') == NULL) {
+			word = strtok(NULL, " \"");
+		}
+		
+		//If we couldnt find any patterns, return
+		if (word == NULL) {
+			free(buffer_copy);
+			return buffer;
+		}
+		else {
+			//The pattern location in the actual buffer
+			char *pattern = strstr(buffer, word);
+			int patternlength = strlen(word);
+			int patternlocation = (int) (pattern - buffer);
+			
+			//Glob stuff
+			glob_t globbuf;
+			//printf("pattern \"%s\"\n", word);
+			if (glob(word, 0, NULL, &globbuf) != 0) {
+				//printf("no matching files or error, return original silently\n");
+				free(buffer_copy);
+				return buffer;
+			}
+
+			char *globstringbuff = malloc(4096);
+			globstringbuff[0] = '\0';
+			
+			int i;
+			for (i = 0; i < globbuf.gl_pathc; i++) {
+				strcat(globstringbuff, globbuf.gl_pathv[i]);
+				if (i != globbuf.gl_pathc - 1) {
+					strcat(globstringbuff, " ");
+				}
+			}
+			
+			char *new_buffer = malloc(4096);
+			new_buffer[0] = '\0';
+			strncpy(new_buffer, buffer, patternlocation);
+			new_buffer[patternlocation] = '\0';
+			
+			strcat(new_buffer, globstringbuff);
+			strcat(new_buffer, pattern + patternlength);
+			
+			//Shrink new_buffer, free allocated memory
+			new_buffer = realloc(new_buffer, strlen(new_buffer) + 1);
+			free(globstringbuff);
+			free(buffer_copy);
+			globfree(&globbuf);
+			
+			return wildcard_expansion(new_buffer);
+		}
+		
+	}
+	return buffer;
 }
 
 /* Reads the entire command line from the terminal, parses environment variables, and aliases. */

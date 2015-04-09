@@ -42,6 +42,7 @@ void preparse(char * true_buffer);
 char* replace_environ_vars_and_aliases(char* buffer);
 char* replace_aliases(char* buffer);
 char* replace_environ_vars(char* buffer);
+char* wildcard_expansion(char* buffer);
 
 /* IO Redirection */
 void switch_output(char *file_name);
