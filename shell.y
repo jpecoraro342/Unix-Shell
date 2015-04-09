@@ -27,7 +27,7 @@ int yylex();
 %type <arg> quotes;
 
 %start line
-%token ls_command cd_command exit_command
+%token cd_command exit_command
 %token setenv_command unsetenv_command printenv_command
 %token alias_command unalias_command
 %token file_name word new_line quotes semicolon 
@@ -46,7 +46,6 @@ line    : command			{;}
       	
 command : //Simple Commands
 		exit_command		{ exit(0); }
-		| ls_command		{ list_files(); }
 		| printenv_command	{ print_environment_variables(); }
 
 		//Built-in Commands
@@ -192,6 +191,9 @@ int main (void) {
 			{
 				printf("Command Name: %s | Command Arg %d: %s\n", comtab[currcmd].comname, i, comtab[currcmd].argptr->args[i]);
 			}
+			
+			executeIt();
+
 		}	
 	}
 

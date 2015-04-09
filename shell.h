@@ -9,6 +9,7 @@ void syntax_error_found();
 
 
 /* System Functions */
+void executeIt(void);
 
 /* List all the files in the current directory */
 void list_files();

@@ -19,6 +19,7 @@ extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 //My Stuff
 #include "shell.h"
 #include "aliaslist.h"
+#include "global.h"
 
 extern char **environ;
 
@@ -264,6 +265,22 @@ void parse_file(char * input_file_name) {
     */
 }
 
+void executeIt(void)
+{
+	pid_t process = fork ();
 
-
-
+	if (process > 0)			/* parent */
+		wait ((int *) 0);		/* null pointer - return value not saved */
+	else if (process == 0)		/* child */
+	{	/* execute program */
+		execvp (comtab[currcmd].comname, comtab[currcmd].argptr->args);
+		/* some problem if exec returns */
+		printf("Error: %s: Command not found.\n", comtab[currcmd].comname);
+		exit (1);
+	}
+	else if ( process == -1)     /* can't create a new process */
+	{
+		fprintf (stderr, "Can't fork!\n");
+		exit (2);
+	}
+}
