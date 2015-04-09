@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 //Lex Stuff
 typedef struct yy_buffer_state * YY_BUFFER_STATE;
@@ -28,8 +30,6 @@ extern char **environ;
 
 void shell_init(void) {
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
-
-
 
 	int i;
 	for(i = 0; i<MAXCMDS; i++)
@@ -54,7 +54,11 @@ void handle_new_line() {
 		close(saved_output);
 	}
 
-	/* TODO: Restore STDIN */
+	/* Restore STDIN */
+	if (saved_input != STDIN) {
+		dup2(saved_input, STDIN);
+		close(saved_input);
+	}
 
 	print_prompt();
 }
@@ -394,6 +398,7 @@ void switch_output(char *file_name) {
 	file_descriptor = open(file_name, O_WRONLY | O_CREAT, S_IREAD | S_IWRITE );
 	if (file_descriptor == -1) {
 		printf("error: unable to open file: %s\n", strerror(errno));
+		return;
 	}
 
 	saved_output = dup(STDOUT);
@@ -403,9 +408,10 @@ void switch_output(char *file_name) {
 void switch_input(char *file_name) {
 	int file_descriptor;
 
-	file_descriptor = open(file_name, O_WRONLY | O_CREAT, S_IREAD | S_IWRITE );
+	file_descriptor = open(file_name, O_RDONLY);
 	if (file_descriptor == -1) {
 		printf("error: unable to open file: %s\n", strerror(errno));
+		return;
 	}
 
 	saved_input = dup(STDIN);
