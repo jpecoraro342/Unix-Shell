@@ -7,7 +7,6 @@ void handle_new_line();
 /* handle syntax */
 void syntax_error_found();
 
-
 /* System Functions */
 void executeIt(void);
 
@@ -28,11 +27,14 @@ char * check_environment_variables(char *buffer);
 void create_alias(char *alias_name, char *full_command);
 void list_aliases(void);
 void remove_alias(char *alias_name);
-void check_aliases(char *alias_name);
+struct alias* check_aliases(char *alias_name);
 
 /* Lex/Yacc stuff */
 void parse_string(char * input);
 void parse_file(char * input_file_name);
 
+/* Preparsing */ 
 void preparse(char * true_buffer);
-char * replace_environ_vars_and_aliases(char* buffer);
+char* replace_environ_vars_and_aliases(char* buffer);
+char* replace_aliases(char* buffer);
+char* replace_environ_vars(char* buffer);

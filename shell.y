@@ -67,9 +67,10 @@ command : //Simple Commands
 		| error 			{ syntax_error_found(); }
 		;
 
-/*non_command : 
-			| word 		{ check_aliases($1); }
-			| quotes	{ check_aliases($1); }
+/*
+non_command : file_name {;}
+			| word 		{;}
+			| quotes	{;}
 			| semicolon {;}
 			;*/
 
@@ -171,12 +172,14 @@ int main (void) {
 		comtab[i].argptr = (ARGTAB *)malloc(sizeof(ARGTAB));
 	}
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
-	handle_new_line();
 	while (1) {	
 		eventCount = 0; //USELESS RIGHT NOW
 		currcmd = 0;
 		currarg = 0; //First arg is reserved for the command
 		builtin = 1; //Default to builtin
+
+		handle_new_line();
+
 		/* Save the entire command line */
 		char true_buffer[1024];
 		preparse(true_buffer);
@@ -186,8 +189,7 @@ int main (void) {
 			//CHECK IF IN TABLE CORRECTLY
 			//CHECK IF IN PATH
 			printf("Non built-in command entered.\n");
-			i = 0;
-			for (i; i<comtab[currcmd].nargs; i++)
+			for (i = 0; i<comtab[currcmd].nargs; i++)
 			{
 				printf("Command Name: %s | Command Arg %d: %s\n", comtab[currcmd].comname, i, comtab[currcmd].argptr->args[i]);
 			}

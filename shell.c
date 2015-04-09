@@ -27,6 +27,8 @@ extern char **environ;
 
 /* Cleanup for when a new line has been entered - printing stuff, etc. */
 void handle_new_line() {
+	resetVisited(); //Clears the Alias Loop Stuff
+
 	char current_directory[512];
 	getcwd(current_directory, sizeof(current_directory));
 
@@ -43,7 +45,6 @@ void handle_new_line() {
 void syntax_error_found() {
 	//printf("Syntax Error\n");
 }
-
 
 /* System Function Calls */
 
@@ -127,6 +128,10 @@ void create_alias(char *alias_name, char *full_command) {
 	struct alias* a = malloc(sizeof(struct alias));
 	a->alias_name = temp_alias;
 	a->full_command = temp_command;
+	a->visited = false;
+
+	//Remove old alias with name if it exists
+	remove_alias_with_name(alias_name);
 
 	//Check for success
 	add_alias(a);
@@ -146,17 +151,112 @@ void remove_alias(char *alias_name) {
 	}
 }
 
-void check_aliases(char *alias_name) {
+struct alias* check_aliases(char *alias_name) {
 	struct alias* tempalias = get_alias_with_name(alias_name);
-	if (tempalias != NULL) {
-		parse_string(tempalias->full_command);
+	/*if (tempalias != NULL) {
+		printf("alias found - \"%s\" : \"%s\"\n", alias_name, tempalias->full_command);
 	}
 	else {
-		printf("error: \"%s\": command not found\n", alias_name);
-	}
+		printf("alias not found - \"%s\" \n", alias_name);
+	}*/
+	return tempalias;
 }
 
-char * check_environment_variables(char *buffer)
+/* Pre Parsing */
+
+char* replace_environ_vars_and_aliases(char* buffer) {
+	printf("Orignal Input: \"%s\"\n", buffer);
+	if (strstr(buffer, "alias") == buffer) {
+		//printf("Don't Replace Variables\n");
+		return buffer;
+	}
+
+	char* alias_buffer = replace_aliases(buffer);
+	if (alias_buffer == NULL) {
+		return "";
+	}
+	printf("Post Alias Input: \"%s\"\n", alias_buffer);
+	char* environ_buffer = replace_environ_vars(alias_buffer);
+
+	printf("Post Pre-Parsing Input: \"%s\"\n", environ_buffer);
+	
+	return environ_buffer;
+}
+
+char* replace_aliases(char* buffer) {
+	//printf("replace aliases in \"%s\"\n", buffer);
+	char *buffer_copy = malloc(strlen(buffer));
+	strcpy(buffer_copy, buffer);
+	char *first_word = malloc(strlen(buffer));
+
+	if (strchr(buffer_copy, ' ') != NULL) {
+		first_word = strtok(buffer_copy, " \"");
+	}
+	else {
+		first_word = strtok(buffer_copy, "\'\n\'");
+	}
+	//printf("First Word: %s\n", first_word);
+	
+	if (first_word != NULL) {
+		struct alias* alias = check_aliases(first_word);
+
+		if (alias == NULL) {
+			//printf("No Alias Found for: \"%s\"\n", first_word);
+			return buffer;
+		}
+		else if (alias->visited) {
+			printf("error: alias loop: \"%s\" : \"%s\"\n", first_word, alias->full_command);
+			return NULL;
+		}
+		else {
+			//printf("Alias Found: \"%s\" : \"%s\"\n", first_word, alias->full_command);
+			alias->visited = true;
+
+			//Replace the String
+			int original_length = strlen(first_word);
+			int replace_length = strlen(alias->full_command);
+			int final_new_length = strlen(buffer) - original_length + replace_length;
+
+			//copy of replacement string - not sure if we need to do this
+			char *full_command = malloc(replace_length);
+			strcpy(full_command, alias->full_command);
+
+			//create a new string
+			char *replacement_buffer = malloc(final_new_length);
+			strcat(replacement_buffer, full_command);
+			strcat(replacement_buffer, buffer+original_length);
+
+			//printf("Replaced Alias: \"%s\" : \"%s\"\n", first_word, alias->full_command);
+			//printf("New Command: %s\n", replacement_buffer);
+
+			return replace_aliases(replacement_buffer);
+		}
+	}
+
+	free(buffer_copy);
+
+	return buffer;
+}
+
+char* replace_environ_vars(char* buffer) {
+	char* temp_buffer = check_environment_variables(buffer);
+	if(temp_buffer != NULL)
+	{
+	    puts(temp_buffer);
+	    while((temp_buffer != NULL) && (strcmp(temp_buffer,buffer) != 0))
+	    {
+			strcpy(buffer,temp_buffer);
+			free(temp_buffer);
+			temp_buffer = check_environment_variables(buffer);
+	    }
+	}
+	char *returned_buffer = malloc(1024);
+	memcpy(returned_buffer, buffer, 1024);
+	
+	return returned_buffer;
+}
+
+char* check_environment_variables(char *buffer)
 {
 	char *start_pointer;
 	char *end_pointer;
@@ -200,31 +300,7 @@ char * check_environment_variables(char *buffer)
 			
 		}
 	}
-	else
-	{
-		//printf("Did not find environment variable.\n");
-		return NULL;
-	}
-}
-
-char * replace_environ_vars_and_aliases(char* buffer)
-{
-	char * temp_buffer = check_environment_variables(buffer);
-	puts(buffer);
-	if(temp_buffer != NULL)
-	{
-	    puts(temp_buffer);
-	    while((temp_buffer != NULL) && (strcmp(temp_buffer,buffer) != 0))
-	    {
-		strcpy(buffer,temp_buffer);
-		free(temp_buffer);
-		temp_buffer = check_environment_variables(buffer);
-	    }
-	}
-	char *returned_buffer = malloc(1024);
-	memcpy(returned_buffer, buffer, 1024);
-	
-	return returned_buffer;
+	return NULL;
 }
 
 /* Reads the entire command line from the terminal, parses environment variables, and aliases. */

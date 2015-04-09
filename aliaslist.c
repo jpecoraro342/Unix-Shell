@@ -97,3 +97,12 @@ int remove_alias_with_name(char * alias_name) {
 	return -1;
 
 }
+
+void resetVisited() {
+	struct node* current = head; 
+	
+	while (current != NULL) {
+		current->data->visited = false;
+		current = current->next;
+	}
+}
