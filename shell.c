@@ -48,6 +48,7 @@ void handle_new_line() {
 	currcmd = 0;
 	currarg = 0; //First arg is reserved for the command
 	builtin = 1; //Default to builtin
+	append = 0;	 //Default to not append to <EOF> during output redirection
 
 	/* Restore STDOUT */
 	dup2(saved_output, STDOUT);
