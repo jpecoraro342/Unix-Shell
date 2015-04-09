@@ -43,6 +43,10 @@ void handle_new_line() {
 	currarg = 0; //First arg is reserved for the command
 	builtin = 1; //Default to builtin
 
+	print_prompt();
+}
+
+void print_prompt() {
 	char current_directory[512];
 	getcwd(current_directory, sizeof(current_directory));
 
