@@ -136,6 +136,26 @@ quote_input : quotes { $$ = $1; $$[strlen($$) - 1] = '\0'; $$ = $$ + 1; }
 syntax_error 		: syntax {;}
 					;
 
+/* I/O Redirection */
+
+input : read_from word 	{
+							//strcpy(srcf , $2);
+							//comtab[0].infd = BADFD;
+							switch_input($2);
+						}
+	  ;
+
+output : write_to word 	{
+							//strcpy( distf, $2);
+							//comtab[currcmd-1].outfd = BADFD;
+							switch_output($2);
+						}
+	   | write_to write_to word 	{	/* Append to EOF */
+	   									//strcpy(distf, $3);
+	   									//comtab[currcmd-1].outfd = BADFD;
+	   									switch_output($3);
+	   									append = 1;
+	   								}	   
 
 %%
 

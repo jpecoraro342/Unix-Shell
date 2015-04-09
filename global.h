@@ -36,7 +36,8 @@ extern COMMAND comtab[MAXCMDS];
 extern int eventCount;
 extern int builtin;
 extern int currcmd;
-extern int currarg;	//NECESSARY?
+extern int currarg;
+extern int append;
 
 
 #define NIL(x) (x *)0
