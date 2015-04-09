@@ -7,6 +7,7 @@
 #include <dirent.h> 
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
 
 //Lex Stuff
 typedef struct yy_buffer_state * YY_BUFFER_STATE;
@@ -20,6 +21,10 @@ extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 #include "shell.h"
 #include "aliaslist.h"
 #include "global.h"
+
+//File IO
+int saved_output = STDOUT;
+int saved_input = STDIN;
 
 extern char **environ;
 
@@ -43,6 +48,12 @@ void handle_new_line() {
 	currcmd = 0;
 	currarg = 0; //First arg is reserved for the command
 	builtin = 1; //Default to builtin
+
+	/* Restore STDOUT */
+	dup2(saved_output, STDOUT);
+	close(saved_output);
+
+	/* TODO: Restore STDIN */
 
 	print_prompt();
 }
@@ -345,6 +356,7 @@ void preparse(char * true_buffer) {
 }
 
 /* Lex/Yacc */
+
 void parse_string(char * input) {
 	//puts(input);
 	//YY_BUFFER_STATE cur = get_current_buffer();
@@ -371,6 +383,32 @@ void parse_file(char * input_file_name) {
     yy_switch_to_buffer(cur);
     yy_delete_buffer(buffer);
     */
+}
+
+/* IO Redirection */
+
+void switch_output(char *file_name) {
+	int file_descriptor;
+
+	file_descriptor = open(file_name, O_WRONLY | O_CREAT, S_IREAD | S_IWRITE );
+	if (file_descriptor == -1) {
+		printf("error: unable to open file: %s\n", strerror(errno));
+	}
+
+	saved_output = dup(STDOUT);
+	dup2(file_descriptor, STDOUT);
+}
+
+void switch_input(char *file_name) {
+	int file_descriptor;
+
+	file_descriptor = open(file_name, O_WRONLY | O_CREAT, S_IREAD | S_IWRITE );
+	if (file_descriptor == -1) {
+		printf("error: unable to open file: %s\n", strerror(errno));
+	}
+
+	saved_input = dup(STDIN);
+	dup2(file_descriptor, STDIN);
 }
 
 //Process Handling

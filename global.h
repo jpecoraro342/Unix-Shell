@@ -15,6 +15,10 @@
 
 #define PATH_EXECUTABLE builtin == 0
 
+#define STDIN  0
+#define STDOUT 1
+#define STDERR 2
+
 /* command line arguments structure */
 typedef struct comargs {
 	char *args[MAXARGS];
