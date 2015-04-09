@@ -170,7 +170,6 @@ int main (void) {
 	shell_init();
 	
 	while (1) {	
-
 		handle_new_line();
 
 		/* Save the entire command line */
