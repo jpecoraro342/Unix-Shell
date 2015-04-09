@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <glob.h>
+#include <signal.h>
 
 //Lex Stuff
 typedef struct yy_buffer_state * YY_BUFFER_STATE;
@@ -31,6 +32,8 @@ extern char **environ;
 
 void shell_init(void) {
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
+
+	signal(SIGINT, SIG_IGN); //ignore ctrl c
 
 	int i;
 	for(i = 0; i<MAXCMDS; i++)
