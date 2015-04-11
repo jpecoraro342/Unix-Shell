@@ -1,3 +1,6 @@
+#ifndef __aliaslist__
+#define __aliaslist__
+
 #include <stdbool.h>
 
 struct alias {
@@ -24,3 +27,5 @@ int remove_alias_with_name(char * alias_name);
 void resetVisited();
  
 void print_aliases();
+
+#endif
