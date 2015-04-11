@@ -1,3 +1,36 @@
+#ifndef __shell__
+#define __shell__
+
+//C Libraries
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+//Unix Libraries
+#include <dirent.h> 
+#include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <glob.h>
+#include <signal.h>
+
+//Lex Stuff
+typedef struct yy_buffer_state * YY_BUFFER_STATE;
+extern int yyparse();
+extern void yy_switch_to_buffer (YY_BUFFER_STATE  new_buffer);
+extern YY_BUFFER_STATE yy_scan_string(char * str);
+extern YY_BUFFER_STATE get_current_buffer();
+extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
+
+//My Stuff
+#include "aliaslist.h"
+#include "global.h"
+#include "preparser.h"
+
+extern char **environ;
+
 
 /* Shell Interfacing */
 void shell_init(void);
@@ -37,13 +70,8 @@ struct alias* check_aliases(char *alias_name);
 void parse_string(char * input);
 void parse_file(char * input_file_name);
 
-/* Preparsing */ 
-void preparse(char * true_buffer);
-char* replace_environ_vars_and_aliases(char* buffer);
-char* replace_aliases(char* buffer);
-char* replace_environ_vars(char* buffer);
-char* wildcard_expansion(char* buffer);
-
 /* IO Redirection */
 void switch_output(char *file_name);
 void switch_input(char *file_name);
+
+#endif

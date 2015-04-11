@@ -9,6 +9,7 @@
 #include "shell.h"
 #include "aliaslist.h"
 #include "global.h"
+#include "preparser.h"
 
  
 void yyerror (char *s) { syntax_error_found(); } 

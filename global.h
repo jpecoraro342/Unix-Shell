@@ -1,3 +1,6 @@
+#ifndef __global__
+#define __global__
+
 /* global.h : global data strcutures and constants for shell */
 
 #define MAXCMDS 50
@@ -49,3 +52,5 @@ extern int append;
 
 
 #define NIL(x) (x *)0
+
+#endif
