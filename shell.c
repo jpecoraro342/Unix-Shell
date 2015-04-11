@@ -69,12 +69,18 @@ void handle_new_line() {
 
 void print_prompt() {
 	char current_directory[512];
-	getcwd(current_directory, sizeof(current_directory));
+	char *path_extension = "??";
 
-	char *path_extension = strrchr(current_directory, '/') + 1;
+	if (getcwd(current_directory, 512) != NULL) {
+		path_extension = strrchr(current_directory, '/') + 1;
+	}
 
 	char current_user[100];
-	getlogin_r(current_user, sizeof(current_user));
+	if (getlogin_r(current_user, 100) != 0) {
+		current_user[0] = '?';
+		current_user[1] = '?';
+		current_user[2] = '\0';
+	}
 
 	printf("%s:%s $ ", current_user, path_extension);
 }
@@ -232,7 +238,6 @@ char* replace_environ_vars_and_aliases(char* buffer) {
 	char* wildcard_buffer = wildcard_expansion(environ_buffer);
 
 	//printf("Post Pre-Parsing Input: \"%s\"\n", environ_buffer);
-	
 	return wildcard_buffer;
 }
 
@@ -275,7 +280,8 @@ char* replace_aliases(char* buffer) {
 			strcpy(full_command, alias->full_command);
 
 			//create a new string
-			char *replacement_buffer = malloc(final_new_length + 1);
+			//should malloc to final_new_length + 1, but need extra space for environ vars
+			char *replacement_buffer = malloc(1024);
 			strcat(replacement_buffer, full_command);
 			strcat(replacement_buffer, buffer+original_length);
 
@@ -305,7 +311,8 @@ char* replace_environ_vars(char* buffer) {
 	}
 	char *returned_buffer = malloc(1024);
 	memcpy(returned_buffer, buffer, 1024);
-	
+
+	//returned_buffer = realloc(returned_buffer, strlen(returned_buffer) + 1);
 	return returned_buffer;
 }
 
@@ -343,6 +350,7 @@ char* check_environment_variables(char *buffer)
 
 				//puts(return_buffer);
 
+				//return_buffer = realloc(return_buffer, strlen(return_buffer) + 1);
 				return return_buffer;
 			}
 			else
