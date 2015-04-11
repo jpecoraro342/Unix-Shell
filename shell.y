@@ -29,7 +29,7 @@ int yylex();
 %token setenv_command unsetenv_command printenv_command
 %token alias_command unalias_command
 %token word new_line quotes semicolon 
-%token read_from write_to piping ampersand
+%token read_from write_to pipe ampersand
 %token syntax
 
 %%
@@ -153,6 +153,10 @@ output : write_to word 	{
 	   									append = 1;
 	   								}	
 	   	;   
+
+piping : pipe	{
+					currcmd++;
+				}
 
 %%
 
