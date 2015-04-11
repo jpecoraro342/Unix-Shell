@@ -23,8 +23,13 @@
 #define STDERR 2
 
 //File IO
-extern int saved_output;
 extern int saved_input;
+extern int saved_output;
+
+extern int input_fd;
+extern int output_fd;
+
+extern bool execute_in_background;
 
 /* command line arguments structure */
 typedef struct comargs {

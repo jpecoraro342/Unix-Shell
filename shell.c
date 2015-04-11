@@ -24,16 +24,20 @@ void handle_new_line() {
 	builtin = 1; //Default to builtin
 	append = 0;	 //Default to not append to <EOF> during output redirection
 
-	/* Restore STDOUT */
-	if (saved_output != STDOUT) {
-		dup2(saved_output, STDOUT);
-		close(saved_output);
-	}
-
 	/* Restore STDIN */
 	if (saved_input != STDIN) {
 		dup2(saved_input, STDIN);
 		close(saved_input);
+
+		input_fd = STDIN;
+	}
+
+	/* Restore STDOUT */
+	if (saved_output != STDOUT) {
+		dup2(saved_output, STDOUT);
+		close(saved_output);
+
+		output_fd = STDOUT;
 	}
 
 	print_prompt();
@@ -233,8 +237,9 @@ void switch_output(char *file_name) {
 		return;
 	}
 
+	output_fd = file_descriptor;
+
 	saved_output = dup(STDOUT);
-	dup2(file_descriptor, STDOUT);
 }
 
 void switch_input(char *file_name) {
@@ -246,8 +251,9 @@ void switch_input(char *file_name) {
 		return;
 	}
 
+	input_fd = file_descriptor;
+
 	saved_input = dup(STDIN);
-	dup2(file_descriptor, STDIN);
 }
 
 //Process Handling
