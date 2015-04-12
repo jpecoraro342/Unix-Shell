@@ -237,9 +237,10 @@ void switch_output(char *file_name) {
 		return;
 	}
 
-	output_fd = file_descriptor;
-
 	saved_output = dup(STDOUT);
+	dup2(file_descriptor, STDOUT);
+
+	output_fd = file_descriptor;
 }
 
 void switch_input(char *file_name) {
@@ -251,9 +252,10 @@ void switch_input(char *file_name) {
 		return;
 	}
 
-	input_fd = file_descriptor;
-
 	saved_input = dup(STDIN);
+	dup2(file_descriptor, STDIN);
+
+	input_fd = file_descriptor;
 }
 
 //Process Handling
