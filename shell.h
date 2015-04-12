@@ -74,4 +74,6 @@ void parse_file(char * input_file_name);
 void switch_output(char *file_name);
 void switch_input(char *file_name);
 
+void handle_signal(int signo);
+
 #endif

@@ -5,7 +5,7 @@
 void shell_init(void) {
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
 
-	signal(SIGINT, SIG_IGN); //ignore ctrl c
+	signal(SIGINT, handle_signal); //ignore ctrl c
 
 	int i;
 	for(i = 0; i<MAXCMDS; i++)
@@ -276,6 +276,13 @@ void executeIt(void)
 	{
 		printf ("error: can't fork process: %s", strerror(errno));
 		exit (2);
+	}
+}
+
+void handle_signal(int signo) {
+	if (signo == SIGINT) {
+		printf("to exit please enter bye");
+		handle_new_line();
 	}
 }
 
