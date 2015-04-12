@@ -262,24 +262,21 @@ void switch_input(char *file_name) {
 
 void executeIt(void)
 {
-	fork_pipes();
-	// pid_t process = fork();
+	pid_t process = fork();
 
-	// if (process > 0)			/* parent */
-	// 	wait ((int *) 0);		/* null pointer - return value not saved */
-	// else if (process == 0)		/* child */
-	// {	/* execute program */
-	// 	execvp (comtab[currcmd].comname, comtab[currcmd].argptr->args);
+	if (process > 0)			/* parent */
+		wait ((int *) 0);		/* null pointer - return value not saved */
+	else if (process == 0)		/* child */
+	{	/* Fork pipes to execute commands */
 
-	// 	 some problem if exec returns 
-	// 	printf("error: %s: %s\n", comtab[currcmd].comname, strerror(errno));
-	// 	exit (1);
-	// }
-	// else if ( process == -1)     /* can't create a new process */
-	// {
-	// 	printf ("error: can't fork process: %s", strerror(errno));
-	// 	exit (2);
-	// }
+		fork_pipes();
+		exit (1);
+	}
+	else if ( process == -1)     /* can't create a new process */
+	{
+		printf ("error: can't fork process: %s", strerror(errno));
+		exit (2);
+	}
 }
 
 //Clean-up

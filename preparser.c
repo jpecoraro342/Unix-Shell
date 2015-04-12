@@ -229,5 +229,4 @@ void preparse(char * true_buffer) {
 
 	char * return_buffer = replace_environ_vars_and_aliases(buffer);
 	strcpy(true_buffer, return_buffer);
-	//free(return_buffer); SUPER MAJOR ISSUE!!!!
 }

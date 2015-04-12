@@ -27,18 +27,22 @@ void fork_pipes (void)
 		else if (pid == 0) {
 			//printf("child process running: %d\n", i);
 
-			if (i != 0) {
+			if (i != 0) {	
+				fflush(stdin);
 				int last_in = fd[i-1][0];
 				dup2(last_in, STDIN);
 			}
 			else {
+				fflush(stdin);
 				dup2(in_fd, input_fd);
 			}
 
 			if (i != currcmd) {
+				fflush(stdout);
 				dup2(out_fd, STDOUT);
 			}
 			else {
+				fflush(stdout);
 				dup2(fd[i-1][1], output_fd);
 			}
 
