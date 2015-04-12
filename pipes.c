@@ -91,7 +91,7 @@ int spawn_process (int in, int out, int current_cmd)
 		printf("ABOUT TO LEAVE THE SPAWN: \n");
 		execvp(comtab[current_cmd].comname, (char * const *)comtab[current_cmd].argptr->args);	
 		printf("Error 1: %s: %s\n", comtab[current_cmd].comname, strerror(errno));
-		exit(1);
+		//exit(1);
 	}
 	else
 	{
