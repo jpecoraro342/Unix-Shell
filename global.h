@@ -3,6 +3,8 @@
 
 /* global.h : global data strcutures and constants for shell */
 
+#include <stdbool.h>
+
 #define MAXCMDS 50
 #define MAXARGS 300
 #define MAXALIAS 100

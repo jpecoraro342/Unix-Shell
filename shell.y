@@ -30,7 +30,7 @@ int yylex();
 %token setenv_command unsetenv_command printenv_command
 %token alias_command unalias_command
 %token word new_line quotes semicolon 
-%token read_from write_to pipe ampersand
+%token read_from write_to pipe_token ampersand
 %token syntax
 
 %%
@@ -47,7 +47,7 @@ command : //Simple Commands
 		
 
 		//Built-in Commands
-		| printenv_command	{ print_environment_variables(); }
+		| printenv_command		{ print_environment_variables(); }
 		| change_directory		{;}
 		| set_environ_var		{;}
 		| unset_environ_var 	{;}
@@ -60,6 +60,9 @@ command : //Simple Commands
 		//IO Redirection Commands
 		| input 		{;}
 		| output 		{;}
+
+		//Piping
+		| pipe_token			{currcmd++; printf("Pipe found: %d\n", currcmd);}
 
 		//Errors
 		| syntax_error 		{ syntax_error_found(); }
@@ -155,10 +158,6 @@ output : write_to word 	{
 	   								}	
 	   	;   
 
-piping : pipe	{
-					currcmd++;
-				}
-
 %%
 
 int main (void) {
@@ -181,7 +180,7 @@ int main (void) {
 			// 	printf("Command Name: %s | Command Arg %d: %s\n", comtab[currcmd].comname, i, comtab[currcmd].argptr->args[i]);
 			// }
 			executeIt();
-		}	
+		}
 	}
 	free_memory();
 }

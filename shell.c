@@ -5,7 +5,7 @@
 void shell_init(void) {
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
 
-	signal(SIGINT, SIG_IGN); //ignore ctrl c
+	//signal(SIGINT, SIG_IGN); //ignore ctrl c
 
 	int i;
 	for(i = 0; i<MAXCMDS; i++)
@@ -58,7 +58,7 @@ void print_prompt() {
 		current_user[2] = '\0';
 	}
 
-	printf("%s:%s $ ", current_user, path_extension);
+	printf("%s:%s $ ", "**********", "**********");
 }
 
 void clear_command_table() {
@@ -260,23 +260,24 @@ void switch_input(char *file_name) {
 
 void executeIt(void)
 {
-	pid_t process = fork();
+	fork_pipes();
+	// pid_t process = fork();
 
-	if (process > 0)			/* parent */
-		wait ((int *) 0);		/* null pointer - return value not saved */
-	else if (process == 0)		/* child */
-	{	/* execute program */
-		execvp (comtab[currcmd].comname, comtab[currcmd].argptr->args);
+	// if (process > 0)			/* parent */
+	// 	wait ((int *) 0);		/* null pointer - return value not saved */
+	// else if (process == 0)		/* child */
+	// {	/* execute program */
+	// 	execvp (comtab[currcmd].comname, comtab[currcmd].argptr->args);
 
-		/* some problem if exec returns */
-		printf("error: %s: %s\n", comtab[currcmd].comname, strerror(errno));
-		exit (1);
-	}
-	else if ( process == -1)     /* can't create a new process */
-	{
-		printf ("error: can't fork process: %s", strerror(errno));
-		exit (2);
-	}
+	// 	 some problem if exec returns 
+	// 	printf("error: %s: %s\n", comtab[currcmd].comname, strerror(errno));
+	// 	exit (1);
+	// }
+	// else if ( process == -1)     /* can't create a new process */
+	// {
+	// 	printf ("error: can't fork process: %s", strerror(errno));
+	// 	exit (2);
+	// }
 }
 
 //Clean-up

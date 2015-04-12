@@ -20,7 +20,7 @@
 
 "<"						{ return read_from; }
 ">"						{ return write_to; }
-"|"						{ return pipe; }
+"|"						{ return pipe_token; }
 "&"						{ return ampersand; }
 ;						{ return semicolon; }
 [ \t\n]+				/* ignore whitespace */
