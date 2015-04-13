@@ -14,6 +14,7 @@
 "alias"					{ return alias_command; }
 "unalias"				{ return unalias_command; }
 "bye"				   	{ return exit_command; }
+"~""[*? ${}_,<>|&\"@!#%'=~.:/:A-Za-z0-9-]*"	{ yyval.arg = strdup(yytext); return tilde; }
 
 "\""[*? ${}_,<>|&\"@!#%'=~.:/:A-Za-z0-9-]+"\""	{ yylval.arg = strdup(yytext); return quotes; }
 [*?@!#%'_,=~\.:/:A-Za-z0-9-]+						{ yylval.arg = strdup(yytext); return word; }
@@ -23,6 +24,7 @@
 "|"						{ return pipe_token; }
 "&"						{ return ampersand; }
 ;						{ return semicolon; }
+
 [ \t\n]+				/* ignore whitespace */
 .						{ yylval.arg = yytext; return syntax; }
 

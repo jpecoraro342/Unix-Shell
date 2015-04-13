@@ -20,6 +20,7 @@ int yylex();
 
 %union { char *cmd; char *arg; }
 
+%type <arg> tilde;
 %type <arg> word;
 %type <arg> quote_input;
 %type <arg> quotes;
@@ -29,7 +30,7 @@ int yylex();
 %token cd_command exit_command
 %token setenv_command unsetenv_command printenv_command
 %token alias_command unalias_command
-%token word new_line quotes semicolon 
+%token word new_line quotes semicolon tilde
 %token read_from write_to pipe_token ampersand
 %token syntax
 
@@ -127,6 +128,7 @@ arguments 	: word_or_quote				{
 
 word_or_quote : quote_input { $$ = $1; }
 			  | word { $$ = $1; }
+			  | tilde {$$ = tilde_expansion($1);}
 			  ;
 
 quote_input : quotes { $$ = $1; $$[strlen($$) - 1] = '\0'; $$ = $$ + 1; }

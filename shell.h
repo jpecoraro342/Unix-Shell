@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <glob.h>
 #include <signal.h>
+#include <pwd.h>
 
 //Lex Stuff
 typedef struct yy_buffer_state * YY_BUFFER_STATE;
@@ -74,4 +75,6 @@ void parse_file(char * input_file_name);
 void switch_output(char *file_name);
 void switch_input(char *file_name);
 
+/* Tilde Expansion */
+char * tilde_expansion(char *word);
 #endif

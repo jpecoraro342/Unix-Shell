@@ -229,6 +229,36 @@ void parse_file(char * input_file_name) {
     */
 }
 
+/* Tilde Expansion */
+char* tilde_expansion(char* word)
+{
+	char *slash_word = NULL;
+	if (strlen(word) == 1) {
+	        change_directory_home();
+	        return "";
+	}      
+	else if (slash_word = strchr(word, '/') != NULL) {
+	        char *home_dir = getenv("HOME");
+	        char *expanded_string = malloc(strlen(home_dir) + strlen(slash_word) + 1);
+	        strcat(expanded_string, home_dir);
+	        strcat(expanded_string, slash_word);
+
+	        return expanded_string;
+	}
+	else {
+	      struct passwd* password = getpwnam(word + 1);
+	      if (password == NULL) {
+	     		return getenv("HOME");
+	      }
+	      else {
+              char * new_dir = malloc(strlen(password->pw_dir) + 1);
+              strcpy(new_dir, password->pw_dir);
+
+              return new_dir;
+	      }
+	}
+
+
 /* IO Redirection */
 
 void switch_output(char *file_name) {
