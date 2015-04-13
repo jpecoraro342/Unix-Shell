@@ -63,7 +63,7 @@ command : //Simple Commands
 		| output 		{;}
 
 		//Piping
-		| pipe_token			{currcmd++; printf("Pipe found: %d\n", currcmd);}
+		| pipe_token			{ currcmd++; }
 
 		//Errors
 		| syntax_error 		{ syntax_error_found(); }
