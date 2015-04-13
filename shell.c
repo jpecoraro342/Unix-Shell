@@ -5,7 +5,8 @@
 void shell_init(void) {
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
 
-	//signal(SIGINT, SIG_IGN); //ignore ctrl c
+	signal(SIGINT, SIG_IGN); //ignore ctrl c
+	signal(SIGQUIT, SIG_IGN); //ignore ctrl backslash
 
 	int i;
 	for(i = 0; i<MAXCMDS; i++)
@@ -58,7 +59,8 @@ void print_prompt() {
 		current_user[2] = '\0';
 	}
 
-	printf("%s:%s $ ", "**********", "**********");
+	//printf("%s:%s $ ", "**********", "**********");
+	printf("%s:%s $ ", current_user, path_extension);
 }
 
 void clear_command_table() {
@@ -268,7 +270,9 @@ void executeIt(void)
 		wait ((int *) 0);		/* null pointer - return value not saved */
 	else if (process == 0)		/* child */
 	{	/* Fork pipes to execute commands */
-
+		signal(SIGINT, SIG_DFL); //unignore ctrl c
+		signal(SIGQUIT, SIG_DFL); //unignore ctrl backslash
+		
 		fork_pipes();
 		exit (1);
 	}
