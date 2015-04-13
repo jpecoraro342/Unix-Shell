@@ -5,7 +5,8 @@
 void shell_init(void) {
 	printf("Welcome to the Sperling & Pecoraro Shell!\n");
 
-	signal(SIGINT, handle_signal); //ignore ctrl c
+	signal(SIGINT, SIG_IGN); //ignore ctrl c
+	signal(SIGQUIT, SIG_IGN); //ignore ctrl backslash
 
 	int i;
 	for(i = 0; i<MAXCMDS; i++)
@@ -51,12 +52,7 @@ void print_prompt() {
 		path_extension = strrchr(current_directory, '/') + 1;
 	}
 
-	char current_user[100];
-	if (getlogin_r(current_user, 100) != 0) {
-		current_user[0] = '?';
-		current_user[1] = '?';
-		current_user[2] = '\0';
-	}
+	char *current_user = getenv("USER");
 
 	printf("%s:%s $ ", current_user, path_extension);
 }
@@ -237,9 +233,10 @@ void switch_output(char *file_name) {
 		return;
 	}
 
-	output_fd = file_descriptor;
-
 	saved_output = dup(STDOUT);
+	dup2(file_descriptor, STDOUT);
+
+	output_fd = file_descriptor;
 }
 
 void switch_input(char *file_name) {
@@ -251,9 +248,10 @@ void switch_input(char *file_name) {
 		return;
 	}
 
-	input_fd = file_descriptor;
-
 	saved_input = dup(STDIN);
+	dup2(file_descriptor, STDIN);
+
+	input_fd = file_descriptor;
 }
 
 //Process Handling
@@ -265,11 +263,11 @@ void executeIt(void)
 	if (process > 0)			/* parent */
 		wait ((int *) 0);		/* null pointer - return value not saved */
 	else if (process == 0)		/* child */
-	{	/* execute program */
-		execvp (comtab[currcmd].comname, comtab[currcmd].argptr->args);
-
-		/* some problem if exec returns */
-		printf("error: %s: %s\n", comtab[currcmd].comname, strerror(errno));
+	{	/* Fork pipes to execute commands */
+		signal(SIGINT, SIG_DFL); //unignore ctrl c
+		signal(SIGQUIT, SIG_DFL); //unignore ctrl backslash
+		
+		fork_pipes();
 		exit (1);
 	}
 	else if ( process == -1)     /* can't create a new process */

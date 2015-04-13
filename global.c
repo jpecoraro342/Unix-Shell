@@ -12,3 +12,6 @@ COMMAND comtab[MAXCMDS];
 //File IO
 int saved_output = STDOUT;
 int saved_input = STDIN;
+
+int input_fd = STDIN;
+int output_fd = STDOUT;

@@ -217,11 +217,18 @@ char * wildcard_expansion(char * buffer) {
 	return buffer;
 }
 
+int lineno = 0;
+
 /* Reads the entire command line from the terminal, parses environment variables, and aliases. */
 void preparse(char * true_buffer) {
 	char buffer[1024];
 	fgets(buffer, 1024, stdin);
 
+	lineno ++;
+	fflush(stdout);
+	fflush(stdin);
+
+	//sleep(1);
 	if (feof(stdin)) {
 		strcpy(true_buffer, "bye");
 		return;
@@ -229,5 +236,4 @@ void preparse(char * true_buffer) {
 
 	char * return_buffer = replace_environ_vars_and_aliases(buffer);
 	strcpy(true_buffer, return_buffer);
-	//free(return_buffer); SUPER MAJOR ISSUE!!!!
 }
