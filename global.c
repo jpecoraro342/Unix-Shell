@@ -15,3 +15,5 @@ int saved_input = STDIN;
 
 int input_fd = STDIN;
 int output_fd = STDOUT;
+
+bool execute_in_background = false;

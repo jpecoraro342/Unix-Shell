@@ -39,6 +39,7 @@ int yylex();
 
 line    : command			{;}
 		| line command 		{;}
+		| command ampersand {execute_in_background == true; printf("Execute in Background.\n");}
         ;
 
       	

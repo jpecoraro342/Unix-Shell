@@ -23,6 +23,7 @@ void handle_new_line() {
 	currarg = 0; //First arg is reserved for the command
 	builtin = 1; //Default to builtin
 	append = 0;	 //Default to not append to <EOF> during output redirection
+	execute_in_background = false;
 
 	/* Restore STDIN */
 	if (saved_input != STDIN) {
@@ -251,7 +252,8 @@ void switch_input(char *file_name) {
 		printf("error: unable to open file: %s\n", strerror(errno));
 		return;
 	}
-
+	
+	fflush(stdin);
 	saved_input = dup(STDIN);
 	dup2(file_descriptor, STDIN);
 
@@ -265,14 +267,17 @@ void executeIt(void)
 	pid_t process = fork();
 
 	if (process > 0)			/* parent */
-		wait ((int *) 0);		/* null pointer - return value not saved */
+	{
+		if(!execute_in_background)
+			wait ((int *) 0);		/* null pointer - return value not saved */
+	}
 	else if (process == 0)		/* child */
 	{	/* Fork pipes to execute commands */
-
-		fork_pipes();
-		exit (1);
+		
+			fork_pipes();
+			exit (1);
 	}
-	else if ( process == -1)     /* can't create a new process */
+	else if ( process < 0)     /* can't create a new process */
 	{
 		printf ("error: can't fork process: %s", strerror(errno));
 		exit (2);

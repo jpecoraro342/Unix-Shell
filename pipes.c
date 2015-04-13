@@ -47,7 +47,7 @@ void fork_pipes (void)
 			}
 
 			close(in_fd);
-
+			fflush(stdout);
 			execvp (comtab[i].comname, (char * const *)comtab[i].argptr->args);
 			printf("Error: %s: %s\n", comtab[i].comname, strerror(errno));
 			exit(1);
@@ -58,10 +58,13 @@ void fork_pipes (void)
 		}
  	}
 
- 	 for (i = 0; i <= currcmd; i ++) {
- 	 	wait((int *) 0);
- 	}
-
+	if(!execute_in_background)
+	{
+		for (i = 0; i <= currcmd; i ++) {
+ 			wait((int *) 0); 	/* null pointer - return value not saved */	
+		}
+	}
+	
  	// for (i = 0; i < currcmd; i ++) {
  	// 	close(fd[i][0]);
  	// 	close(fd[i][1]);
