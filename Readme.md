@@ -1,24 +1,28 @@
 Sperling & Pecoraro Unix Shell
 =========
 
-Issues Google Doc:
-https://docs.google.com/document/d/1fjnci7Rf3xDYAgwKjTK12WyW2EH-o-epSXYkvXecF_g/edit
-
-
 ####Features NOT Implemented
-- Standard Error Redirection (for now)
+- Standard Error Redirection
 - I/O Redirection for Built-in Commands (we were told this was not necessary)
 - Piping for Built-in Commands (we were also told this was not necessary)
 - Executing Commands in the Background
 - Printing Line Number of Errors
-- Tilde Expansion *Extra Credit* (for now)
-- File Name Completiong *Extra Credit*
+- Tilde Expansion *Extra Credit* (Almost working, can show progress on git)
+- File Name Completion *Extra Credit*
+
+#####PATH COMMANDS DO NOT RUN WHEN REDIRECTING STANDARD INPUT FROM A FILE.
+Please try to run commands in the shell itself on the command line. Sorry for the inconvenience.
 
 ####Features Implemented
 - Built-in Commands
 - Path (all other) Commands
 - Pipes
-- I/O Redirection to/from Files (excluding standard errors)
-- Environment Varaible Expansion
+- I/O Redirection to/from Files (with one input problem mentioned above)
+- Environment Variables / Environment Variables Expansion
 - Aliasing
 - Wildcard Matching
+
+###Compile Instructions
+1. Run "make clean".
+2. Run "make".
+3. Run "./shell".
