@@ -76,11 +76,7 @@ change_directory   	: cd_command word  	{ change_directory($2); }
 					| cd_command				{ change_directory_home(); } 
         			;
 
-set_environ_var		: setenv_command word word  {	//Add a null terminated character at the true end of $2
-															int word1len = strlen($2) - strlen($3);
-															$2[word1len - 1] = '\0';
-															set_environment_variable($2, $3); 
-														}
+set_environ_var		: setenv_command word word  { set_environment_variable($2, $3); }
 					;
 
 unset_environ_var	: unsetenv_command word 			{ unset_environment_variable($2); }
